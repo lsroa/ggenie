@@ -33,6 +33,12 @@ class Entity {
     bool operator!=(const Entity &other) const {
       return id != other.id;
     }
+    bool operator>(const Entity &other) const {
+      return id > other.id;
+    }
+    bool operator<(const Entity &other) const {
+      return id < other.id;
+    }
 };
 
 class System {
