@@ -1,5 +1,8 @@
 #include "game.h"
 #include "../Logger/logger.h"
+#include "../src/Components/rigid_body.h"
+#include "../src/Components/transform.h"
+#include "glm/glm.hpp"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_keycode.h>
@@ -11,12 +14,14 @@
 
 Game::Game() {
   Logger::log("Game spawn");
+  registry = std::make_shared<Registry>();
 }
 Game::~Game() {
   Logger::log("Game despawn");
 }
 
 void Game::Init() {
+  Logger::log("Game init");
   int result = SDL_Init(SDL_INIT_EVERYTHING);
   if (result != 0) {
     Logger::err("Error SDL init");
@@ -71,6 +76,10 @@ void Game::ProccessInput() {
 }
 
 void Game::Setup() {
+  Logger::log("Game Setup");
+  auto tank = registry->CreateEntity();
+  registry->AddComponent<Transform>(tank);
+  registry->AddComponent<RigidBody>(tank, glm::vec2(10.0, 0.0));
 }
 
 void Game::Update() {

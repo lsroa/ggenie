@@ -1,7 +1,9 @@
 #pragma once
 
+#include "../ECS/registry.h"
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_video.h>
+#include <memory>
 
 const int FPS = 60;
 const int MPF = 1000 / FPS;
@@ -14,6 +16,7 @@ class Game {
     SDL_Renderer *renderer;
     State state;
     int ms = 0;
+    std::shared_ptr<Registry> registry;
 
   public:
     Game();
