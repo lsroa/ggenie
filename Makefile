@@ -1,12 +1,13 @@
 CC = g++
+FLAGS = -Wall -Wfatal-errors -std=c++17 
 
 ifeq ($(shell uname), Darwin)
-	COMPILER_FLAGS = -Wall -Wfatal-errors -std=c++17 \
+	COMPILER_FLAGS = $(FLAGS) \
 	-I/opt/homebrew/include \
 	-L/opt/homebrew/lib
 	LUA_LINKER_FLAGS = -llua
 else
-	COMPILER_FLAGS = -Wall -Wfatal-errors -std=c++17 
+	COMPILER_FLAGS = $(FLAGS)
 	LUA_LINKER_FLAGS = -llua5.3
 endif
 
