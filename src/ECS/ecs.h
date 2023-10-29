@@ -11,8 +11,10 @@ class IComponent {
 
 template <typename ComponentType>
 class Component : public IComponent {
-    int id;
+  public:
     static int GetId() {
+      /* this static makes the id to be "cached" for the next call of the
+       * function */
       static auto id = nextId++;
       return id;
     }
@@ -47,7 +49,7 @@ class System {
     std::vector<Entity> entities;
 
   public:
-    System() = default;
+    System(Signature signature) : signature(signature){};
     ~System() = default;
     void AddEntity(Entity entity);
     void RemoveEntity(Entity entity);
@@ -65,7 +67,7 @@ void System::RequireComponent() {
 
 class IPool {
   public:
-    virtual void Add() = 0;
+    virtual ~IPool(){};
 };
 
 template <typename T>
@@ -94,5 +96,9 @@ class Pool : public IPool {
 
     void Set(int id, T obj) {
       data[id] = obj;
+    }
+
+    int GetSize() {
+      return data.size();
     }
 };

@@ -1,11 +1,14 @@
 #include "ecs.h"
 #include <algorithm>
 
+int IComponent::nextId = 0;
+
 int Entity::GetId() const {
   return id;
 }
 
 void System::AddEntity(Entity entity) {
+
   entities.push_back(entity);
 }
 
@@ -21,6 +24,7 @@ void System::RemoveEntity(Entity entity) {
 Signature System::GetSignature() const {
   return signature;
 }
+
 std::vector<Entity> System::GetEntities() const {
   return entities;
 }
