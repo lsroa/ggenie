@@ -78,8 +78,12 @@ void Game::ProccessInput() {
 void Game::Setup() {
   Logger::log("Game Setup");
   auto tank = registry->CreateEntity();
-  registry->AddComponent<Transform>(tank);
-  registry->AddComponent<RigidBody>(tank, glm::vec2(10.0, 0.0));
+  tank.AddComponent<Transform>();
+  tank.AddComponent<RigidBody>();
+
+  auto tank_position = tank.GetComponent<Transform>().position;
+  Logger::log("tank position: " + std::to_string(tank_position.y) + " " +
+              std::to_string(tank_position.x));
 }
 
 void Game::Update() {

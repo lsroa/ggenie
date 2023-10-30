@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../ECS/registry.h"
+#include "../src/ECS/ecs.h"
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_video.h>
 #include <memory>
