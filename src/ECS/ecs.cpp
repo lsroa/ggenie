@@ -30,8 +30,6 @@ std::vector<Entity> System::GetEntities() const {
   return entities;
 }
 
-System::System(Signature signature) : signature(signature){};
-
 /* Registry */
 Entity Registry::CreateEntity() {
   int id = len++;

@@ -2,6 +2,8 @@
 #include "../Logger/logger.h"
 #include "../src/Components/rigid_body.h"
 #include "../src/Components/transform.h"
+#include "../src/System/movement.h"
+#include "../src/System/render.h"
 #include "glm/glm.hpp"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -15,6 +17,7 @@
 Game::Game() {
   Logger::log("Game spawn");
   registry = std::make_shared<Registry>();
+  store = std::make_unique<Store>();
 }
 Game::~Game() {
   Logger::log("Game despawn");
@@ -77,13 +80,19 @@ void Game::ProccessInput() {
 
 void Game::Setup() {
   Logger::log("Game Setup");
+
+  /* Register systems */
+  registry->AddSystem<Movement>();
+  registry->AddSystem<RenderSystem>();
+
+  /* Add textures */
+  store->AddTexture("tank", "./assets/images/tank.png");
+
+  /* Create tank */
   auto tank = registry->CreateEntity();
   tank.AddComponent<Transform>();
-  tank.AddComponent<RigidBody>();
-
-  auto tank_position = tank.GetComponent<Transform>().position;
-  Logger::log("tank position: " + std::to_string(tank_position.y) + " " +
-              std::to_string(tank_position.x));
+  tank.AddComponent<RigidBody>(glm::vec2(100.0, 0.0));
+  tank.AddComponent<Sprite>("tank", 10, 10);
 }
 
 void Game::Update() {
@@ -91,14 +100,23 @@ void Game::Update() {
   if (time > 0) {
     SDL_Delay(time);
   }
-  /* double delta = (SDL_GetTicks() - ms) / 1000.0f; */
-  /* ms = SDL_GetTicks(); */
+  double delta = (SDL_GetTicks() - ms) / 1000.0f;
+  ms = SDL_GetTicks();
+
+  /* Call the update of the system */
+  registry->GetSystem<Movement>().Update(delta);
+
+  /* Add batched entities */
+  registry->Update();
 }
 
 void Game::Render() {
   SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
   SDL_RenderClear(renderer);
 
+  registry->GetSystem<RenderSystem>().Update(renderer);
+
+  /* swap back with front buffer */
   SDL_RenderPresent(renderer);
 }
 

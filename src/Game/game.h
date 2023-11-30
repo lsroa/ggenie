@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../src/AssetStore/asset_store.h"
 #include "../src/ECS/ecs.h"
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_video.h>
@@ -17,6 +18,7 @@ class Game {
     State state;
     int ms = 0;
     std::shared_ptr<Registry> registry;
+    std::shared_ptr<Store> store;
 
   public:
     Game();

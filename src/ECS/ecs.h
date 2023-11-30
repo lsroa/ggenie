@@ -85,7 +85,7 @@ class System {
     std::vector<class Entity> entities;
 
   public:
-    System(Signature signature);
+    System() = default;
     ~System() = default;
     void AddEntity(Entity entity);
     void RemoveEntity(Entity entity);
@@ -136,10 +136,17 @@ class Entity {
     void RemoveComponent();
 };
 
+/**
+ *  Class of registry
+ */
 class Registry {
   private:
     std::unordered_map<std::type_index, std::shared_ptr<System>> systems;
+    /**
+     * Queue for adding enitties
+     */
     std::set<Entity> toAdd;
+    // Queue for killing entities
     std::set<Entity> toKill;
     std::vector<Signature> signatures;
     std::vector<std::shared_ptr<IPool>> componentPools;
@@ -185,8 +192,8 @@ void Registry::AddSystem(Args &&...args) {
 template <typename TSystem>
 TSystem &Registry::GetSystem() const {
   auto system = systems.find(std::type_index(typeid(TSystem)));
-  return std::static_pointer_cast<std::shared_ptr<TSystem>>(system->second);
-};
+  return *(std::static_pointer_cast<TSystem>(system->second));
+}
 
 template <typename TSystem>
 void Registry::RemoveSystem() {
