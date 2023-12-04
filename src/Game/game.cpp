@@ -4,7 +4,6 @@
 #include "../src/Components/transform.h"
 #include "../src/System/movement.h"
 #include "../src/System/render.h"
-#include "glm/glm.hpp"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_keycode.h>
@@ -12,7 +11,6 @@
 #include <SDL2/SDL_video.h>
 #include <cstdlib>
 #include <glm/glm.hpp>
-#include <iostream>
 
 Game::Game() {
   Logger::log("Game spawn");
@@ -86,13 +84,13 @@ void Game::Setup() {
   registry->AddSystem<RenderSystem>();
 
   /* Add textures */
-  store->AddTexture("tank", "./assets/images/tank.png");
+  store->AddTexture(renderer, "tank", "./assets/tank.png");
 
   /* Create tank */
   auto tank = registry->CreateEntity();
   tank.AddComponent<Transform>();
   tank.AddComponent<RigidBody>(glm::vec2(100.0, 0.0));
-  tank.AddComponent<Sprite>("tank", 10, 10);
+  tank.AddComponent<Sprite>("tank", 30, 30);
 }
 
 void Game::Update() {
@@ -111,10 +109,10 @@ void Game::Update() {
 }
 
 void Game::Render() {
-  SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+  SDL_SetRenderDrawColor(renderer, 120, 120, 120, 255);
   SDL_RenderClear(renderer);
 
-  registry->GetSystem<RenderSystem>().Update(renderer);
+  registry->GetSystem<RenderSystem>().Update(renderer, store);
 
   /* swap back with front buffer */
   SDL_RenderPresent(renderer);

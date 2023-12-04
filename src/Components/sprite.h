@@ -1,7 +1,5 @@
 #pragma once
-#include "glm/glm.hpp"
 #include <string>
-using namespace glm;
 
 struct Sprite {
     std::string id;
