@@ -23,9 +23,10 @@ Game::~Game() {
 
 void Game::Init() {
   Logger::log("Game init");
-  int result = SDL_Init(SDL_INIT_EVERYTHING);
+
+  int result = SDL_Init(SDL_INIT_VIDEO);
   if (result != 0) {
-    Logger::err("Error SDL init");
+    Logger::err("Error SDL init video");
     return;
   }
 
@@ -76,8 +77,8 @@ void Game::ProccessInput() {
   }
 }
 
-void Game::Setup() {
-  Logger::log("Game Setup");
+void Game::LoadLevel(int level) {
+  Logger::log("Loading level " + std::to_string(level));
 
   /* Register systems */
   registry->AddSystem<Movement>();
@@ -89,8 +90,13 @@ void Game::Setup() {
   /* Create tank */
   auto tank = registry->CreateEntity();
   tank.AddComponent<Transform>();
-  tank.AddComponent<RigidBody>(glm::vec2(100.0, 0.0));
-  tank.AddComponent<Sprite>("tank", 30, 30);
+  tank.AddComponent<RigidBody>(glm::vec2(0.0, 0.0));
+  tank.AddComponent<Sprite>("tank", 32, 32);
+};
+
+void Game::Setup() {
+  Logger::log("Game Setup");
+  LoadLevel(1);
 }
 
 void Game::Update() {

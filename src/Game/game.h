@@ -15,12 +15,12 @@ class Game {
   private:
     SDL_Window *window;
     SDL_Renderer *renderer;
-    State state;
     int ms = 0;
     std::shared_ptr<Registry> registry;
     std::shared_ptr<Store> store;
 
   public:
+    State state;
     Game();
     ~Game();
     void Destroy();
@@ -28,6 +28,7 @@ class Game {
     void ProccessInput();
     void Render();
     void Setup();
+    void LoadLevel(int level);
     void Run();
     void Update();
     int width;

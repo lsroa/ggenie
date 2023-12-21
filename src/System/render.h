@@ -20,9 +20,8 @@ class RenderSystem : public System {
         SDL_Rect target = {
             static_cast<int>(position.x),
             static_cast<int>(position.y),
-            // this needs to be multiplied by the transform scale
-            sprite.w,
-            sprite.h,
+            sprite.w * static_cast<int>(sprite.scale.x),
+            sprite.h * static_cast<int>(sprite.scale.y),
         };
 
         auto texture = store->GetTexture(sprite.id);

@@ -1,7 +1,7 @@
 #include "asset_store.h"
+#include "../Logger/logger.h"
 #include "SDL2/SDL_image.h"
 #include "SDL2/SDL_render.h"
-#include "SDL2/SDL_surface.h"
 #include <string>
 
 void Store::AddTexture(
@@ -12,10 +12,8 @@ void Store::AddTexture(
     /// Path to the asset
     const std::string &path) {
 
-  SDL_Surface *surface = IMG_Load(path.c_str());
-  SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
-
-  SDL_FreeSurface(surface);
+  Logger::log("Adding texture from: " + path);
+  SDL_Texture *texture = IMG_LoadTexture(renderer, path.c_str());
 
   this->textures.emplace(assetId, texture);
 };
