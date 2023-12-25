@@ -1,9 +1,13 @@
 #include "game.h"
 #include "../Logger/logger.h"
+#include "../libs/ldtk/include/LDtkLoader/Project.hpp"
 #include "../src/Components/rigid_body.h"
 #include "../src/Components/transform.h"
 #include "../src/System/movement.h"
 #include "../src/System/render.h"
+#include "glm/ext/vector_float2.hpp"
+#include <LDtkLoader/Layer.hpp>
+#include <LDtkLoader/Tile.hpp>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_keycode.h>
@@ -11,6 +15,7 @@
 #include <SDL2/SDL_video.h>
 #include <cstdlib>
 #include <glm/glm.hpp>
+#include <string>
 
 Game::Game() {
   Logger::log("Game spawn");
@@ -32,12 +37,14 @@ void Game::Init() {
 
   SDL_DisplayMode displayMode;
   SDL_GetCurrentDisplayMode(0, &displayMode);
-  width = displayMode.w;
-  height = displayMode.h;
+  /* width = displayMode.w; */
+  /* height = displayMode.h; */
+  this->width = 320 * 4;
+  this->height = 192 * 4;
 
   window =
       SDL_CreateWindow(NULL, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                       width - 200, height - 200, SDL_WINDOW_BORDERLESS);
+                       this->width, this->height, SDL_WINDOW_BORDERLESS);
   if (!window) {
     Logger::err("Error creating window");
     return;
@@ -77,12 +84,39 @@ void Game::ProccessInput() {
   }
 }
 
-void Game::LoadLevel(int level) {
-  Logger::log("Loading level " + std::to_string(level));
+void Game::LoadLevel(int levelId) {
+  Logger::log("Loading level " + std::to_string(levelId));
+
+  const auto scale = 4.0;
 
   /* Register systems */
   registry->AddSystem<Movement>();
   registry->AddSystem<RenderSystem>();
+
+  /* Load ldtk */
+  ldtk::Project ldtk_project;
+  ldtk_project.loadFromFile("./assets/tank_wars.ldtk");
+  store->AddTexture(renderer, "tilemap", "./assets/tilemap.png");
+
+  const auto &world = ldtk_project.getWorld();
+
+  // get the level and the layer we want to render
+
+  const auto &level = world.getLevel(levelId);
+  const auto &layer = level.getLayer("Floor");
+
+  /* get all the tiles in the Ground layer */
+  const auto &tiles_vector = layer.allTiles();
+
+  for (ldtk::Tile tile : tiles_vector) {
+    auto tile_entity = registry->CreateEntity();
+    auto [x, y] = tile.getPosition();
+    Logger::log("position x: " + std::to_string(x));
+    Logger::log("position y: " + std::to_string(y));
+    auto [tx, ty, w, h] = tile.getTextureRect();
+    tile_entity.AddComponent<Transform>(glm::vec2(x * scale, y * scale));
+    tile_entity.AddComponent<Sprite>("tilemap", tx, ty, w, h, glm::vec2(scale));
+  }
 
   /* Add textures */
   store->AddTexture(renderer, "tank", "./assets/tank.png");
@@ -96,7 +130,7 @@ void Game::LoadLevel(int level) {
 
 void Game::Setup() {
   Logger::log("Game Setup");
-  LoadLevel(1);
+  LoadLevel(0);
 }
 
 void Game::Update() {

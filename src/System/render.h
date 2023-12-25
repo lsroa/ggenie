@@ -4,6 +4,7 @@
 #include "../src/Components/transform.h"
 #include "../src/ECS/ecs.h"
 #include "SDL2/SDL_render.h"
+#include <SDL_rect.h>
 
 class RenderSystem : public System {
   public:
@@ -26,10 +27,14 @@ class RenderSystem : public System {
 
         auto texture = store->GetTexture(sprite.id);
 
-        // the crop box for the image usually 0,0 for the complete image
-        /* SDL_Rect srcRect = {0, 0, sprite.w, sprite.h}; */
+        if (!texture) {
+          Logger::err("texture not found: " + sprite.id);
+        }
 
-        SDL_RenderCopy(renderer, texture, NULL, &target);
+        // the crop box for the image usually 0,0 for the complete image
+        SDL_Rect srcRect = {sprite.x, sprite.y, sprite.w, sprite.h};
+
+        SDL_RenderCopy(renderer, texture, &srcRect, &target);
       }
     }
 };
