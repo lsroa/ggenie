@@ -1,9 +1,8 @@
 #pragma once
 #include "../src/Logger/logger.h"
-#include "ecs.h"
 #include <bitset>
-#include <cstddef>
 #include <memory>
+#include <regex>
 #include <set>
 #include <typeindex>
 #include <unordered_map>
@@ -89,6 +88,7 @@ class System {
     ~System() = default;
     void AddEntity(Entity entity);
     void RemoveEntity(Entity entity);
+    std::string GetName(std::type_index) const;
     std::vector<Entity> GetEntities() const;
     Signature GetSignature() const;
     template <typename ComponentType>
@@ -233,9 +233,11 @@ void Registry::AddComponent(Entity entity, TArgs &&...args) {
   ComponentType component = ComponentType(std::forward<TArgs>(args)...);
 
   pool->Set(entityId, component);
-  Logger::log(
-      static_cast<std::string>(std::type_index(typeid(ComponentType)).name()) +
-      " component added to entity: " + std::to_string(entityId));
+  const auto component_name = std::regex_replace(
+      static_cast<std::string>(std::type_index(typeid(ComponentType)).name()),
+      std::regex("[0-9]"), "");
+  Logger::log(component_name +
+              " component added to entity: " + std::to_string(entityId));
   signatures[entityId].set(componentId);
 };
 

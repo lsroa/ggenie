@@ -18,8 +18,8 @@ void Logger::log(const std::string &msg) {
   Log log;
   log.msg = msg;
   log.level = Level::Info;
-  log.msg = "LOG:" + getCurrentTime() + msg;
-  std::cout << GREEN + log.msg + RESET << std::endl;
+  log.msg = "LOG:" + getCurrentTime() + RESET + msg;
+  std::cout << GREEN + log.msg << std::endl;
   messages.push_back(log);
 }
 
@@ -27,7 +27,7 @@ void Logger::err(const std::string &msg) {
   Log log;
   log.msg = msg;
   log.level = Level::Error;
-  log.msg = "ERR:" + getCurrentTime() + msg;
-  std::cout << GREEN + log.msg + RESET << std::endl;
+  log.msg = RED + "ERR:" + getCurrentTime() + RESET + msg;
+  std::cout << log.msg << std::endl;
   messages.push_back(log);
 }

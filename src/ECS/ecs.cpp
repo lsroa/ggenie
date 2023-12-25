@@ -1,5 +1,5 @@
 #include "ecs.h"
-#include <algorithm>
+#include <regex>
 
 int IComponent::nextId = 0;
 
@@ -11,6 +11,10 @@ int Entity::GetId() const {
 void System::AddEntity(Entity entity) {
 
   entities.push_back(entity);
+}
+
+std::string System::GetName(std::type_index index) const {
+  return std::regex_replace(index.name(), std::regex("[0-9]"), "");
 }
 
 void System::RemoveEntity(Entity entity) {
@@ -53,8 +57,8 @@ void Registry::AddEntityToSystem(Entity entity) {
     const auto systemSignature = system->GetSignature();
     if ((systemSignature & entitySignature) == systemSignature) {
       system->AddEntity(entity);
-      Logger::log("Entity added to " + std::string(system_type.name()) +
-                  " system");
+      Logger::log("Entity " + std::to_string(entityId) + " added to " +
+                  system->GetName(system_type));
     }
   }
 };
