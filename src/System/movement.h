@@ -4,9 +4,9 @@
 #include "../src/ECS/ecs.h"
 #include <glm/glm.hpp>
 
-class Movement : public System {
+class MovementSystem : public System {
   public:
-    Movement() {
+    MovementSystem() {
       RequireComponent<Transform>();
       RequireComponent<RigidBody>();
     };

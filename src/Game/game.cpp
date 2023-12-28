@@ -16,6 +16,7 @@
 #include <cstdlib>
 #include <glm/glm.hpp>
 #include <string>
+#define SCALE 4
 
 Game::Game() {
   Logger::log("Game spawn");
@@ -39,8 +40,8 @@ void Game::Init() {
   SDL_GetCurrentDisplayMode(0, &displayMode);
   /* width = displayMode.w; */
   /* height = displayMode.h; */
-  this->width = 320 * 4;
-  this->height = 192 * 4;
+  this->width = 320 * SCALE;
+  this->height = 192 * SCALE;
 
   window =
       SDL_CreateWindow(NULL, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
@@ -87,44 +88,44 @@ void Game::ProccessInput() {
 void Game::LoadLevel(int levelId) {
   Logger::log("Loading level " + std::to_string(levelId));
 
-  const auto scale = 4.0;
-
   /* Register systems */
-  registry->AddSystem<Movement>();
+  registry->AddSystem<MovementSystem>();
   registry->AddSystem<RenderSystem>();
 
   /* Load ldtk */
   ldtk::Project ldtk_project;
   ldtk_project.loadFromFile("./assets/tank_wars.ldtk");
-  store->AddTexture(renderer, "tilemap", "./assets/tilemap.png");
+  store->AddTexture(renderer, "tilemap", "./assets/tilemap_1.png");
 
   const auto &world = ldtk_project.getWorld();
 
-  // get the level and the layer we want to render
-
   const auto &level = world.getLevel(levelId);
-  const auto &layer = level.getLayer("Floor");
 
-  /* get all the tiles in the Ground layer */
-  const auto &tiles_vector = layer.allTiles();
+  std::string layers[] = {"Floor_1", "Water"};
 
-  for (ldtk::Tile tile : tiles_vector) {
-    auto tile_entity = registry->CreateEntity();
-    auto [x, y] = tile.getPosition();
-    Logger::log("position x: " + std::to_string(x));
-    Logger::log("position y: " + std::to_string(y));
-    auto [tx, ty, w, h] = tile.getTextureRect();
-    tile_entity.AddComponent<Transform>(glm::vec2(x * scale, y * scale));
-    tile_entity.AddComponent<Sprite>("tilemap", tx, ty, w, h, glm::vec2(scale));
+  for (const auto &layer_id : layers) {
+
+    const auto &layer = level.getLayer(layer_id);
+
+    const auto &tiles_vector = layer.allTiles();
+
+    for (ldtk::Tile tile : tiles_vector) {
+      auto tile_entity = registry->CreateEntity();
+      auto [x, y] = tile.getPosition();
+      auto [tx, ty, w, h] = tile.getTextureRect();
+      tile_entity.AddComponent<Transform>(glm::vec2(x * SCALE, y * SCALE));
+      tile_entity.AddComponent<Sprite>("tilemap", tx, ty, w, h,
+                                       glm::vec2(SCALE));
+    }
   }
 
   /* Add textures */
-  store->AddTexture(renderer, "tank", "./assets/tank.png");
+  store->AddTexture(renderer, "tank", "./assets/tank_1.png");
 
   /* Create tank */
   auto tank = registry->CreateEntity();
   tank.AddComponent<Transform>();
-  tank.AddComponent<RigidBody>(glm::vec2(0.0, 0.0));
+  tank.AddComponent<RigidBody>(glm::vec2(1.0, 0.0));
   tank.AddComponent<Sprite>("tank", 32, 32);
 };
 
@@ -142,7 +143,7 @@ void Game::Update() {
   ms = SDL_GetTicks();
 
   /* Call the update of the system */
-  registry->GetSystem<Movement>().Update(delta);
+  registry->GetSystem<MovementSystem>().Update(delta);
 
   /* Add batched entities */
   registry->Update();
