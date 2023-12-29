@@ -31,3 +31,12 @@ void Logger::err(const std::string &msg) {
   std::cout << log.msg << std::endl;
   messages.push_back(log);
 }
+
+void Logger::info(const std::string &msg) {
+  Log log;
+  log.msg = msg;
+  log.level = Level::Info;
+  log.msg = YELLOW + "INFO:" + getCurrentTime() + RESET + msg;
+  std::cout << log.msg << std::endl;
+  messages.push_back(log);
+}

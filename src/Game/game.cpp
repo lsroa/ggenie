@@ -19,12 +19,12 @@
 #define SCALE 4
 
 Game::Game() {
-  Logger::log("Game spawn");
+  Logger::info("Game spawn");
   registry = std::make_shared<Registry>();
   store = std::make_unique<Store>();
 }
 Game::~Game() {
-  Logger::log("Game despawn");
+  Logger::info("Game despawn");
 }
 
 void Game::Init() {
@@ -86,16 +86,17 @@ void Game::ProccessInput() {
 }
 
 void Game::LoadLevel(int levelId) {
-  Logger::log("Loading level " + std::to_string(levelId));
+  Logger::info("Loading level " + std::to_string(levelId));
 
   /* Register systems */
   registry->AddSystem<MovementSystem>();
   registry->AddSystem<RenderSystem>();
 
+  store->AddTexture(renderer, "tilemap", "./assets/tilemap_1.png");
+
   /* Load ldtk */
   ldtk::Project ldtk_project;
   ldtk_project.loadFromFile("./assets/tank_wars.ldtk");
-  store->AddTexture(renderer, "tilemap", "./assets/tilemap_1.png");
 
   const auto &world = ldtk_project.getWorld();
 
@@ -119,18 +120,14 @@ void Game::LoadLevel(int levelId) {
     }
   }
 
-  /* Add textures */
-  store->AddTexture(renderer, "tank", "./assets/tank_1.png");
-
-  /* Create tank */
-  auto tank = registry->CreateEntity();
-  tank.AddComponent<Transform>();
-  tank.AddComponent<RigidBody>(glm::vec2(1.0, 0.0));
-  tank.AddComponent<Sprite>("tank", 32, 32);
+  auto tank_1 = registry->CreateEntity();
+  tank_1.AddComponent<Transform>(glm::vec2(1.0));
+  tank_1.AddComponent<RigidBody>(glm::vec2(30.0, 0.0));
+  tank_1.AddComponent<Sprite>("tilemap", 0, 16, 16, 16, glm::vec2(SCALE));
 };
 
 void Game::Setup() {
-  Logger::log("Game Setup");
+  Logger::info("Game Setup");
   LoadLevel(0);
 }
 
