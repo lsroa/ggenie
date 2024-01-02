@@ -106,11 +106,20 @@ void Game::LoadLevel(int levelId) {
 
   const auto &level = world.getLevel(levelId);
 
-  std::string layers[] = {"Floor_1", "Water"};
+  const auto &layers = level.allLayers();
 
-  for (const auto &layer_id : layers) {
+  std::vector<std::string> layer_names;
+  std::transform(layers.rbegin(), layers.rend(),
+                 std::back_inserter(layer_names),
+                 [](const ldtk::Layer &l) { return l.getName(); });
+
+  for (const auto &layer_id : layer_names) {
 
     const auto &layer = level.getLayer(layer_id);
+
+    if (!layer.isVisible()) {
+      continue;
+    }
 
     const auto &tiles_vector = layer.allTiles();
 
