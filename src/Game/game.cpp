@@ -1,8 +1,10 @@
 #include "game.h"
 #include "../Logger/logger.h"
 #include "../libs/ldtk/include/LDtkLoader/Project.hpp"
+#include "../src/Components/animation.h"
 #include "../src/Components/rigid_body.h"
 #include "../src/Components/transform.h"
+#include "../src/System/animation.h"
 #include "../src/System/movement.h"
 #include "../src/System/render.h"
 #include "glm/ext/vector_float2.hpp"
@@ -91,8 +93,10 @@ void Game::LoadLevel(int levelId) {
   /* Register systems */
   registry->AddSystem<MovementSystem>();
   registry->AddSystem<RenderSystem>();
+  registry->AddSystem<AnimationSystem>();
 
   store->AddTexture(renderer, "tilemap", "./assets/tilemap_1.png");
+  store->AddTexture(renderer, "tank", "./assets/tank.png");
 
   /* Load ldtk */
   ldtk::Project ldtk_project;
@@ -123,7 +127,8 @@ void Game::LoadLevel(int levelId) {
   auto tank_1 = registry->CreateEntity();
   tank_1.AddComponent<Transform>(glm::vec2(1.0));
   tank_1.AddComponent<RigidBody>(glm::vec2(30.0, 0.0));
-  tank_1.AddComponent<Sprite>("tilemap", 0, 16, 16, 16, glm::vec2(SCALE));
+  tank_1.AddComponent<Sprite>("tank", 0, 16, 16, 16, glm::vec2(SCALE));
+  tank_1.AddComponent<Animation>(2, 4);
 };
 
 void Game::Setup() {
@@ -141,13 +146,14 @@ void Game::Update() {
 
   /* Call the update of the system */
   registry->GetSystem<MovementSystem>().Update(delta);
+  registry->GetSystem<AnimationSystem>().Update();
 
   /* Add batched entities */
   registry->Update();
 }
 
 void Game::Render() {
-  SDL_SetRenderDrawColor(renderer, 120, 120, 120, 255);
+  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
   SDL_RenderClear(renderer);
 
   registry->GetSystem<RenderSystem>().Update(renderer, store);
