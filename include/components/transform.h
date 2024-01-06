@@ -1,6 +1,7 @@
 #pragma once
-#include "glm/glm.hpp"
-using namespace glm;
+#include "glm/ext/vector_float2.hpp"
+
+typedef glm::vec2 vec2;
 
 struct Transform {
     vec2 position;

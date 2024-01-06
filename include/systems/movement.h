@@ -1,7 +1,8 @@
 #pragma once
-#include "../src/Components/rigid_body.h"
-#include "../src/Components/transform.h"
-#include "../src/ECS/ecs.h"
+#include "components/rigid_body.h"
+#include "components/transform.h"
+#include "ecs.h"
+
 #include <glm/glm.hpp>
 
 class MovementSystem : public System {

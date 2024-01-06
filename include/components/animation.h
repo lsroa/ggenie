@@ -1,5 +1,5 @@
 #pragma once
-#include "SDL2/SDL_timer.h"
+#include <SDL2/SDL_timer.h>
 
 struct Animation {
     int total_frames;

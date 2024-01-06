@@ -1,14 +1,17 @@
 #include "game.h"
-#include "../Logger/logger.h"
-#include "../libs/ldtk/include/LDtkLoader/Project.hpp"
-#include "../src/Components/animation.h"
-#include "../src/Components/rigid_body.h"
-#include "../src/Components/transform.h"
-#include "../src/System/animation.h"
-#include "../src/System/movement.h"
-#include "../src/System/render.h"
-#include "glm/ext/vector_float2.hpp"
+#include "components/animation.h"
+#include "components/collider.h"
+#include "components/rigid_body.h"
+#include "components/transform.h"
+#include "logger.h"
+#include "systems/animation.h"
+#include "systems/collision.h"
+#include "systems/debug.h"
+#include "systems/movement.h"
+#include "systems/render.h"
+
 #include <LDtkLoader/Layer.hpp>
+#include <LDtkLoader/Project.hpp>
 #include <LDtkLoader/Tile.hpp>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -18,7 +21,6 @@
 #include <cstdlib>
 #include <glm/glm.hpp>
 #include <string>
-#define SCALE 4
 
 Game::Game() {
   Logger::info("Game spawn");
@@ -65,7 +67,7 @@ void Game::Init() {
 
 void Game::Run() {
   Setup();
-  while (state == State::running) {
+  while (state == State::running || state == State::debug) {
     ProccessInput();
     Update();
     Render();
@@ -83,6 +85,15 @@ void Game::ProccessInput() {
       if (sdlEvent.key.keysym.sym == SDLK_ESCAPE) {
         state = State::quit;
       }
+      if (sdlEvent.key.keysym.sym == SDLK_d) {
+        // toggle debug mode
+        if (state == State::debug) {
+          state = State::running;
+        } else {
+          Logger::info("debug mode");
+          state = State::debug;
+        }
+      }
     }
   }
 }
@@ -94,6 +105,8 @@ void Game::LoadLevel(int levelId) {
   registry->AddSystem<MovementSystem>();
   registry->AddSystem<RenderSystem>();
   registry->AddSystem<AnimationSystem>();
+  registry->AddSystem<CollisionSystem>();
+  registry->AddSystem<DebugSystem>();
 
   store->AddTexture(renderer, "tilemap", "./assets/tilemap_1.png");
   store->AddTexture(renderer, "tank", "./assets/tank.png");
@@ -138,6 +151,14 @@ void Game::LoadLevel(int levelId) {
   tank_1.AddComponent<RigidBody>(glm::vec2(30.0, 0.0));
   tank_1.AddComponent<Sprite>("tank", 0, 16, 16, 16, glm::vec2(SCALE));
   tank_1.AddComponent<Animation>(2, 4);
+  tank_1.AddComponent<BoxCollider>(16 * SCALE, 16 * SCALE);
+
+  auto tank_2 = registry->CreateEntity();
+  tank_2.AddComponent<Transform>(glm::vec2(300.0, 0.0));
+  tank_2.AddComponent<RigidBody>(glm::vec2(-30.0, 0.0));
+  tank_2.AddComponent<Sprite>("tank", 0, 16, 16, 16, glm::vec2(SCALE), true);
+  tank_2.AddComponent<Animation>(2, 4);
+  tank_2.AddComponent<BoxCollider>(16 * SCALE, 16 * SCALE);
 };
 
 void Game::Setup() {
@@ -153,7 +174,8 @@ void Game::Update() {
   double delta = (SDL_GetTicks() - ms) / 1000.0f;
   ms = SDL_GetTicks();
 
-  /* Call the update of the system */
+  /* Call the update of the systems */
+  registry->GetSystem<CollisionSystem>().Update();
   registry->GetSystem<MovementSystem>().Update(delta);
   registry->GetSystem<AnimationSystem>().Update();
 
@@ -166,6 +188,10 @@ void Game::Render() {
   SDL_RenderClear(renderer);
 
   registry->GetSystem<RenderSystem>().Update(renderer, store);
+
+  if (state == State::debug) {
+    registry->GetSystem<DebugSystem>().Update(renderer);
+  }
 
   /* swap back with front buffer */
   SDL_RenderPresent(renderer);

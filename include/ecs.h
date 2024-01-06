@@ -1,5 +1,5 @@
 #pragma once
-#include "../src/Logger/logger.h"
+#include "logger.h"
 #include <bitset>
 #include <memory>
 #include <regex>
@@ -141,21 +141,31 @@ class Entity {
  */
 class Registry {
   private:
-    std::unordered_map<std::type_index, std::shared_ptr<System>> systems;
-    /**
-     * Queue for adding enitties
-     */
-    std::set<Entity> toAdd;
-    // Queue for killing entities
-    std::set<Entity> toKill;
-    std::vector<Signature> signatures;
-    std::vector<std::shared_ptr<IPool>> componentPools;
+    // number of Entities
     int len = 0;
+    // All the systems
+    std::unordered_map<std::type_index, std::shared_ptr<System>> systems;
+    // Queue for adding enitties
+    std::set<Entity> to_add;
+    // Queue for killing entities
+    std::set<Entity> to_kill;
+    // It holds the signature of every entity using the id of the entity as
+    // index
+    std::vector<Signature> signatures;
+    // It holds the components of every entity using the id of the entity as
+    // index
+    std::vector<std::shared_ptr<IPool>> component_pools;
+    // Queue of reusable ids
+    std::deque<int> free_ids;
 
   public:
     Registry() = default;
 
+    /* Entity */
     Entity CreateEntity();
+    void AddEntityToSystem(Entity entity);
+    void RemoveEntityFromSystem(Entity entity);
+    void KillEntity(Entity entity);
 
     /* Components */
     template <typename ComponentType, typename... ComponentArgs>
@@ -177,7 +187,6 @@ class Registry {
     template <typename T>
     T &GetSystem() const;
 
-    void AddEntityToSystem(Entity entity);
     void Update();
 };
 
@@ -213,18 +222,18 @@ void Registry::AddComponent(Entity entity, TArgs &&...args) {
   const int componentId = Component<ComponentType>::GetId();
   const int entityId = entity.GetId();
 
-  if (componentId >= componentPools.size()) {
-    componentPools.resize(componentId + 1, nullptr);
+  if (componentId >= component_pools.size()) {
+    component_pools.resize(componentId + 1, nullptr);
   }
 
-  if (!componentPools[componentId]) {
-    componentPools[componentId] = std::make_shared<Pool<ComponentType>>();
+  if (!component_pools[componentId]) {
+    component_pools[componentId] = std::make_shared<Pool<ComponentType>>();
   }
 
   /* why do we need to cast this ? */
   std::shared_ptr<Pool<ComponentType>> pool =
       std::static_pointer_cast<Pool<ComponentType>>(
-          componentPools[componentId]);
+          component_pools[componentId]);
 
   if (pool->GetSize() <= entityId) {
     pool->Resize(len);
@@ -245,7 +254,7 @@ template <typename T>
 T &Registry::GetComponent(Entity entity) const {
   const auto componentId = Component<T>::GetId();
   const auto entityId = entity.GetId();
-  auto pool = std::static_pointer_cast<Pool<T>>(componentPools[componentId]);
+  auto pool = std::static_pointer_cast<Pool<T>>(component_pools[componentId]);
   return pool->Get(entityId);
 };
 

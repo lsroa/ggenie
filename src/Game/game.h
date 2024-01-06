@@ -1,7 +1,9 @@
 #pragma once
 
-#include "../src/AssetStore/asset_store.h"
-#include "../src/ECS/ecs.h"
+#define SCALE 4
+
+#include "asset_store.h"
+#include "ecs.h"
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_video.h>
 #include <memory>
@@ -9,7 +11,7 @@
 const int FPS = 60;
 const int MPF = 1000 / FPS;
 
-enum State { running, pause, quit };
+enum State { running, pause, debug, quit };
 
 class Game {
   private:

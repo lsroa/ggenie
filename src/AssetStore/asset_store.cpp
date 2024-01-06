@@ -1,7 +1,8 @@
 #include "asset_store.h"
-#include "../Logger/logger.h"
-#include "SDL2/SDL_image.h"
-#include "SDL2/SDL_render.h"
+#include "logger.h"
+
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_render.h>
 #include <string>
 
 void Store::AddTexture(

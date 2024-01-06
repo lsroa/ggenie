@@ -7,15 +7,11 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wfatal-errors") 
 
 # Source files
-file(GLOB SRC_FILES src/*.cpp src/Game/*.cpp src/AssetStore/*.cpp src/Logger/*.cpp src/ECS/*.cpp)
+file(GLOB_RECURSE SRC_FILES src/*.cpp) 
 
-# Check for macOS and set flags accordingly
 if(APPLE)
     include_directories(/opt/homebrew/include)
     link_directories(/opt/homebrew/lib)
-    set(LUA_LINKER_FLAGS -llua)
-else()
-    set(LUA_LINKER_FLAGS -llua5.3)
 endif()
 
 # Find SDL2 and SDL2_image libraries
@@ -28,8 +24,11 @@ find_package(LDtkLoader 1.4)
 
 # Build executable
 add_executable(engine ${SRC_FILES})
-target_include_directories(engine PRIVATE "./libs/") 
-target_link_libraries(engine PRIVATE LDtkLoader SDL2_image::SDL2_image SDL2::SDL2 ${LUA_LINKER_FLAGS})
+
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/glm)
+target_include_directories(engine PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+target_link_libraries(engine PRIVATE LDtkLoader glm SDL2_image::SDL2_image SDL2::SDL2)
 
 # Run after build 
 add_custom_command(TARGET engine

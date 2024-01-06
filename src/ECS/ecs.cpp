@@ -43,8 +43,8 @@ Entity Registry::CreateEntity() {
 
   auto entity = std::make_shared<Entity>(id);
   entity->registry = this;
-  toAdd.insert(*entity);
-  Logger::log("Entity created with id: " + std::to_string(id));
+  to_add.insert(*entity);
+  Logger::info("Entity created with id: " + std::to_string(id));
 
   return *entity;
 };
@@ -63,9 +63,37 @@ void Registry::AddEntityToSystem(Entity entity) {
   }
 };
 
+void Registry::RemoveEntityFromSystem(Entity entity) {
+  const auto entityId = entity.GetId();
+  const auto entitySignature = signatures[entityId];
+
+  for (auto &[system_type, system] : systems) {
+    const auto systemSignature = system->GetSignature();
+    if ((systemSignature & entitySignature) == systemSignature) {
+      system->RemoveEntity(entity);
+      Logger::log("Entity " + std::to_string(entityId) + " removed from " +
+                  system->GetName(system_type));
+    }
+  }
+}
+
+void Registry::KillEntity(Entity entity) {
+  auto id = entity.GetId();
+  free_ids.push_back(id);
+  Logger::info("Entity with id: " + std::to_string(id) + " removed");
+  to_kill.insert(entity);
+};
+
 void Registry::Update() {
-  for (auto entity : toAdd) {
+  // Add entities
+  for (auto entity : to_add) {
     AddEntityToSystem(entity);
   }
-  toAdd.clear();
+  to_add.clear();
+
+  // Remove entities
+  for (auto entity : to_kill) {
+    RemoveEntityFromSystem(entity);
+  }
+  to_kill.clear();
 }
