@@ -18,7 +18,6 @@
 #include <SDL2/SDL_keycode.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_video.h>
-#include <cstdlib>
 #include <glm/glm.hpp>
 #include <string>
 
