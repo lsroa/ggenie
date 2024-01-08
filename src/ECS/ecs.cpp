@@ -36,7 +36,15 @@ std::vector<Entity> System::GetEntities() const {
 
 /* Registry */
 Entity Registry::CreateEntity() {
-  int id = len++;
+  int id;
+
+  if (!free_ids.empty()) {
+    id = free_ids.front();
+    free_ids.pop_front();
+  } else {
+    id = len++;
+  }
+
   if (id >= signatures.size()) {
     signatures.resize(id + 1);
   }
