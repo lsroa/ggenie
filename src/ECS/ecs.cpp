@@ -3,8 +3,13 @@
 
 int IComponent::nextId = 0;
 
+/* Entity */
 int Entity::GetId() const {
   return id;
+}
+
+void Entity::KillEntity() {
+  registry->KillEntity(*this);
 }
 
 /* System */
@@ -38,15 +43,14 @@ std::vector<Entity> System::GetEntities() const {
 Entity Registry::CreateEntity() {
   int id;
 
-  if (!free_ids.empty()) {
+  if (free_ids.empty()) {
+    id = len++;
+    if (id >= signatures.size()) {
+      signatures.resize(id + 1);
+    }
+  } else {
     id = free_ids.front();
     free_ids.pop_front();
-  } else {
-    id = len++;
-  }
-
-  if (id >= signatures.size()) {
-    signatures.resize(id + 1);
   }
 
   auto entity = std::make_shared<Entity>(id);
@@ -72,6 +76,7 @@ void Registry::AddEntityToSystem(Entity entity) {
 };
 
 void Registry::RemoveEntityFromSystem(Entity entity) {
+  /* we could use an std::remove_if */
   const auto entityId = entity.GetId();
   const auto entitySignature = signatures[entityId];
 
@@ -87,7 +92,6 @@ void Registry::RemoveEntityFromSystem(Entity entity) {
 
 void Registry::KillEntity(Entity entity) {
   auto id = entity.GetId();
-  free_ids.push_back(id);
   Logger::info("Entity with id: " + std::to_string(id) + " removed");
   to_kill.insert(entity);
 };
@@ -102,6 +106,8 @@ void Registry::Update() {
   // Remove entities
   for (auto entity : to_kill) {
     RemoveEntityFromSystem(entity);
+    signatures[entity.GetId()].reset();
+    free_ids.push_back(entity.GetId());
   }
   to_kill.clear();
 }

@@ -108,7 +108,10 @@ class Entity {
   public:
     Entity(int id) : id(id){};
     int GetId() const;
+    class Registry *registry;
+    void KillEntity();
 
+    /* Operators */
     Entity &operator=(const Entity &other) = default;
     bool operator==(const Entity &other) const {
       return id == other.id;
@@ -122,8 +125,6 @@ class Entity {
     bool operator<(const Entity &other) const {
       return id < other.id;
     }
-
-    class Registry *registry;
 
     /* Components */
     template <typename ComponentType, typename... ComponentArgs>
