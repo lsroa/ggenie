@@ -22,10 +22,11 @@ find_package(SDL2_image REQUIRED)
 set(LDtkLoader_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libs/ldtk/lib/cmake/LDtkLoader)
 find_package(LDtkLoader 1.4)
 
+# Add glm library
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/glm)
+
 # Build executable
 add_executable(engine ${SRC_FILES})
-
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/glm)
 target_include_directories(engine PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 target_link_libraries(engine PRIVATE LDtkLoader glm SDL2_image::SDL2_image SDL2::SDL2)
