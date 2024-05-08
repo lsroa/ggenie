@@ -5,6 +5,7 @@ project(ggenie)
 set(CMAKE_CXX_COMPILER g++)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wfatal-errors") 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Source files
 file(GLOB_RECURSE SRC_FILES src/*.cpp) 
@@ -25,17 +26,14 @@ find_package(LDtkLoader 1.4)
 # Add glm library
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/glm)
 
+#Copy assets to build directory
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets DESTINATION ${CMAKE_BINARY_DIR})
+
 # Build executable
 add_executable(engine ${SRC_FILES})
 target_include_directories(engine PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 target_link_libraries(engine PRIVATE LDtkLoader glm SDL2_image::SDL2_image SDL2::SDL2)
-
-# Run after build 
-add_custom_command(TARGET engine
-		POST_BUILD COMMAND ./engine
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-)
 
 # Build for web
 # set(EMCC_LINKER_FLAGS -sUSE_SDL=2 -sUSE_SDL_IMAGE=2 -sNO_DISABLE_EXCEPTION_CATCHING)
