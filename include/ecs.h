@@ -233,8 +233,7 @@ void Registry::AddComponent(Entity entity, TArgs &&...args) {
 
   /* why do we need to cast this ? */
   std::shared_ptr<Pool<ComponentType>> pool =
-      std::static_pointer_cast<Pool<ComponentType>>(
-          component_pools[componentId]);
+      std::static_pointer_cast<Pool<ComponentType>>(component_pools[componentId]);
 
   if (pool->GetSize() <= entityId) {
     pool->Resize(len);
@@ -244,10 +243,8 @@ void Registry::AddComponent(Entity entity, TArgs &&...args) {
 
   pool->Set(entityId, component);
   const auto component_name = std::regex_replace(
-      static_cast<std::string>(std::type_index(typeid(ComponentType)).name()),
-      std::regex("[0-9]"), "");
-  Logger::log(component_name +
-              " component added to entity: " + std::to_string(entityId));
+      static_cast<std::string>(std::type_index(typeid(ComponentType)).name()), std::regex("[0-9]"), "");
+  Logger::log(component_name + " component added to entity: " + std::to_string(entityId));
   signatures[entityId].set(componentId);
 };
 

@@ -2,3 +2,4 @@ IndentAccessModifiers: true
 AlwaysBreakTemplateDeclarations: true
 # AllowShortBlocksOnASingleLine: SBS_Empty
 AllowShortFunctionsOnASingleLine: None
+ColumnLimit: 120
