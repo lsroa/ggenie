@@ -2,6 +2,8 @@
 #include "components/collider.h"
 #include "components/transform.h"
 #include "ecs.h"
+#include "events/collision.h"
+#include "events/event_bus.h"
 
 class CollisionSystem : public System {
   public:
@@ -9,7 +11,7 @@ class CollisionSystem : public System {
       RequireComponent<BoxCollider>();
       RequireComponent<Transform>();
     };
-    void Update() {
+    void Update(std::unique_ptr<EventBus> &event_bus) {
       auto entities = GetEntities();
 
       for (auto i = entities.begin(); i != entities.end(); i++) {
@@ -29,8 +31,7 @@ class CollisionSystem : public System {
           /* const auto &collider_b = entity.GetComponent<BoxCollider>(); */
 
           if (is_intercepting()) {
-            Logger::log("colliding entity " + std::to_string(entity.GetId()) +
-                        " with entity " + std::to_string(entity_b.GetId()));
+            event_bus->Emit<CollisionEvent>(entity, entity_b);
           }
         };
       };

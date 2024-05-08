@@ -25,7 +25,9 @@ Game::Game() {
   Logger::info("Game spawn");
   registry = std::make_shared<Registry>();
   store = std::make_unique<Store>();
+  event_bus = std::make_unique<EventBus>();
 }
+
 Game::~Game() {
   Logger::info("Game despawn");
 }
@@ -46,9 +48,8 @@ void Game::Init() {
   this->width = 320 * SCALE;
   this->height = 192 * SCALE;
 
-  window =
-      SDL_CreateWindow(NULL, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                       this->width, this->height, SDL_WINDOW_BORDERLESS);
+  window = SDL_CreateWindow(NULL, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, this->width, this->height,
+                            SDL_WINDOW_BORDERLESS);
   if (!window) {
     Logger::err("Error creating window");
     return;
@@ -121,8 +122,7 @@ void Game::LoadLevel(int levelId) {
   const auto &layers = level.allLayers();
 
   std::vector<std::string> layer_names;
-  std::transform(layers.rbegin(), layers.rend(),
-                 std::back_inserter(layer_names),
+  std::transform(layers.rbegin(), layers.rend(), std::back_inserter(layer_names),
                  [](const ldtk::Layer &l) { return l.getName(); });
 
   for (const auto &layer_id : layer_names) {
@@ -140,8 +140,7 @@ void Game::LoadLevel(int levelId) {
       auto [x, y] = tile.getPosition();
       auto [tx, ty, w, h] = tile.getTextureRect();
       tile_entity.AddComponent<Transform>(glm::vec2(x * SCALE, y * SCALE));
-      tile_entity.AddComponent<Sprite>("tilemap", tx, ty, w, h,
-                                       glm::vec2(SCALE));
+      tile_entity.AddComponent<Sprite>("tilemap", tx, ty, w, h, glm::vec2(SCALE));
     }
   }
 
@@ -174,7 +173,7 @@ void Game::Update() {
   ms = SDL_GetTicks();
 
   /* Call the update of the systems */
-  registry->GetSystem<CollisionSystem>().Update();
+  registry->GetSystem<CollisionSystem>().Update(event_bus);
   registry->GetSystem<MovementSystem>().Update(delta);
   registry->GetSystem<AnimationSystem>().Update();
 

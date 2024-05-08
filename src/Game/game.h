@@ -4,6 +4,7 @@
 
 #include "asset_store.h"
 #include "ecs.h"
+#include "events/event_bus.h"
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_video.h>
 #include <memory>
@@ -20,6 +21,7 @@ class Game {
     int ms = 0;
     std::shared_ptr<Registry> registry;
     std::shared_ptr<Store> store;
+    std::unique_ptr<EventBus> event_bus;
 
   public:
     State state;
