@@ -31,19 +31,6 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets DESTINATION ${CMAKE_BINARY_DIR})
 
 # Build executable
 add_executable(engine ${SRC_FILES})
-target_include_directories(engine PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(engine PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 target_link_libraries(engine PRIVATE LDtkLoader glm SDL2_image::SDL2_image SDL2::SDL2)
-
-# Build for web
-# set(EMCC_LINKER_FLAGS -sUSE_SDL=2 -sUSE_SDL_IMAGE=2 -sNO_DISABLE_EXCEPTION_CATCHING)
-# set(TARGET_NAME build/engine.html)
-# add_custom_target(web
-# 		COMMENT "Building for web ..."
-# 		WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-# 		SOURCES ${SRC_FILES}
-# 		COMMAND ${CMAKE_COMMAND} -E make_directory build
-# 		COMMAND emcc --preload-file ./assets ${SRC_FILES} -I "./libs/" ${EMCC_LINKER_FLAGS} -o ${TARGET_NAME} 
-# 		COMMAND emrun --no_browser --port 8080 ${TARGET_NAME}
-# )
-# set_target_properties(web PROPERTIES COMPILE_DEFINITIONS "__EMSCRIPTEN__")

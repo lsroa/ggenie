@@ -1,6 +1,6 @@
 #pragma once
+#include "Utils/logger.h"
 #include "event.h"
-#include "logger.h"
 #include <list>
 #include <map>
 #include <memory>
@@ -25,7 +25,7 @@ class EventCallback : public IEventCallback {
     TOwner *owner;
     CallbackFunction callback;
     void Call(Event &e) override {
-      std::invoke(callback, owner, static_cast<TEvent>(e));
+      std::invoke(callback, owner, static_cast<TEvent &>(e));
     }
 
   public:
@@ -38,8 +38,10 @@ class EventCallback : public IEventCallback {
 
 typedef std::list<std::unique_ptr<IEventCallback>> HandlerList;
 
+//  Event Manager
 class EventBus {
   private:
+    // { `CollisionEvent: [*onCollision, ...]` }
     std::map<std::type_index, std::unique_ptr<HandlerList>> subscribers;
 
   public:
@@ -50,6 +52,12 @@ class EventBus {
       Logger::info("EventBus despawned");
     }
 
+    void Reset() {
+      // clear handlers
+      subscribers.clear();
+    }
+
+    // Eg: `event_bus->Subscribe<CollisionEvent>(&Game::OnCollision)`
     template <typename EventType, typename TOwner>
     void Subscribe(TOwner *owner, void (TOwner::*cb)(EventType &e)) {
       if (!subscribers[typeid(EventType)].get()) {
@@ -59,6 +67,7 @@ class EventBus {
       subscribers[typeid(EventType)]->push_back(std::move(subscriber));
     };
 
+    // Iterate over the `EventType` handler and Execute them
     template <typename EventType, typename... TArgs>
     void Emit(TArgs &&...args) {
       EventType event(std::forward<TArgs>(args)...);

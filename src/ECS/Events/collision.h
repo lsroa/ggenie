@@ -1,6 +1,6 @@
 #pragma once
-#include "ecs.h"
-#include "events/event.h"
+#include "ECS/Events/event.h"
+#include "ECS/ecs.h"
 
 class CollisionEvent : public Event {
   public:

@@ -69,8 +69,7 @@ void Registry::AddEntityToSystem(Entity entity) {
     const auto systemSignature = system->GetSignature();
     if ((systemSignature & entitySignature) == systemSignature) {
       system->AddEntity(entity);
-      Logger::log("Entity " + std::to_string(entityId) + " added to " +
-                  system->GetName(system_type));
+      Logger::log("Entity " + std::to_string(entityId) + " added to " + system->GetName(system_type));
     }
   }
 };
@@ -84,8 +83,7 @@ void Registry::RemoveEntityFromSystem(Entity entity) {
     const auto systemSignature = system->GetSignature();
     if ((systemSignature & entitySignature) == systemSignature) {
       system->RemoveEntity(entity);
-      Logger::log("Entity " + std::to_string(entityId) + " removed from " +
-                  system->GetName(system_type));
+      Logger::log("Entity " + std::to_string(entityId) + " removed from " + system->GetName(system_type));
     }
   }
 }

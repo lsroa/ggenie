@@ -1,5 +1,5 @@
 #include "asset_store.h"
-#include "logger.h"
+#include "Utils/logger.h"
 
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_render.h>

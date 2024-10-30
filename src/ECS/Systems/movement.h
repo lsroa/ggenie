@@ -1,7 +1,7 @@
 #pragma once
-#include "components/rigid_body.h"
-#include "components/transform.h"
-#include "ecs.h"
+#include "ECS/Components/rigid_body.h"
+#include "ECS/Components/transform.h"
+#include "ECS/ecs.h"
 
 #include <glm/glm.hpp>
 

@@ -1,14 +1,14 @@
 #include "game.h"
-#include "components/animation.h"
-#include "components/collider.h"
-#include "components/rigid_body.h"
-#include "components/transform.h"
-#include "logger.h"
-#include "systems/animation.h"
-#include "systems/collision.h"
-#include "systems/debug.h"
-#include "systems/movement.h"
-#include "systems/render.h"
+#include "ECS/Components/animation.h"
+#include "ECS/Components/collider.h"
+#include "ECS/Components/rigid_body.h"
+#include "ECS/Components/transform.h"
+#include "ECS/Systems/animation.h"
+#include "ECS/Systems/collision.h"
+#include "ECS/Systems/debug.h"
+#include "ECS/Systems/movement.h"
+#include "ECS/Systems/render.h"
+#include "Utils/logger.h"
 
 #include <LDtkLoader/Layer.hpp>
 #include <LDtkLoader/Project.hpp>
@@ -171,6 +171,12 @@ void Game::Update() {
   }
   double delta = (SDL_GetTicks() - ms) / 1000.0f;
   ms = SDL_GetTicks();
+
+  /* Clear events */
+  event_bus->Reset();
+
+  /* Register events */
+  registry->GetSystem<DebugSystem>().SubscribeToEvents(event_bus);
 
   /* Call the update of the systems */
   registry->GetSystem<CollisionSystem>().Update(event_bus);

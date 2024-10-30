@@ -1,10 +1,10 @@
 #pragma once
 
-#define SCALE 4
+#define SCALE 3
 
-#include "asset_store.h"
-#include "ecs.h"
-#include "events/event_bus.h"
+#include "AssetStore/asset_store.h"
+#include "ECS/Events/event_bus.h"
+#include "ECS/ecs.h"
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_video.h>
 #include <memory>

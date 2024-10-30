@@ -1,7 +1,7 @@
 #pragma once
-#include "components/animation.h"
-#include "components/sprite.h"
-#include "ecs.h"
+#include "ECS/Components/animation.h"
+#include "ECS/Components/sprite.h"
+#include "ECS/ecs.h"
 
 #include <SDL2/SDL_timer.h>
 

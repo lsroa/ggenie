@@ -1,8 +1,8 @@
 #pragma once
-#include "asset_store.h"
-#include "components/sprite.h"
-#include "components/transform.h"
-#include "ecs.h"
+#include "AssetStore/asset_store.h"
+#include "ECS/Components/sprite.h"
+#include "ECS/Components/transform.h"
+#include "ECS/ecs.h"
 
 #include <SDL2/SDL_render.h>
 #include <SDL_rect.h>
@@ -35,14 +35,11 @@ class RenderSystem : public System {
 
         // the crop box for the image usually 0,0 for the complete image
         SDL_Rect srcRect = {sprite.x, sprite.y, sprite.w, sprite.h};
-        SDL_Point center = {sprite.x + (sprite.w / 2),
-                            sprite.y + (sprite.h / 2)};
+        SDL_Point center = {sprite.x + (sprite.w / 2), sprite.y + (sprite.h / 2)};
 
-        SDL_RendererFlip flip =
-            sprite.is_flipped ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
+        SDL_RendererFlip flip = sprite.is_flipped ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
 
-        SDL_RenderCopyEx(renderer, texture, &srcRect, &target, rotation,
-                         &center, flip);
+        SDL_RenderCopyEx(renderer, texture, &srcRect, &target, rotation, &center, flip);
       }
     }
 };
