@@ -12,7 +12,7 @@
 const int FPS = 60;
 const int MPF = 1000 / FPS;
 
-enum State { running, pause, debug, quit };
+enum class State { running, pause, debug, quit };
 
 class Game {
   private:

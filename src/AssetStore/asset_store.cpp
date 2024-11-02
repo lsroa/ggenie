@@ -5,31 +5,20 @@
 #include <SDL2/SDL_render.h>
 #include <string>
 
-void Store::AddTexture(
-    /// Sdl renderer
-    SDL_Renderer *renderer,
-    /// Uniqure id
-    const std::string &assetId,
-    /// Path to the asset
-    const std::string &path) {
-
-  Logger::log("Adding texture from: " + path);
+void Store::AddTexture(SDL_Renderer *renderer, const std::string &assetId, const std::filesystem::path &path) {
+  Logger::log("Adding texture from: " + path.string());
   SDL_Texture *texture = IMG_LoadTexture(renderer, path.c_str());
 
   this->textures.emplace(assetId, texture);
 };
 
-SDL_Texture *Store::GetTexture(
-    /// Unique id
-    const std::string &id) {
+SDL_Texture *Store::GetTexture(const std::string &id) {
   return this->textures[id];
 };
 
 void Store::ClearTextures() {
   for (auto texture : textures) {
-    // remove the texture from memory
     SDL_DestroyTexture(texture.second);
   }
-  // clear the map
   textures.clear();
 };
