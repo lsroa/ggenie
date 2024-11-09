@@ -3,6 +3,7 @@
 #include "ECS/Components/collider.h"
 #include "ECS/Components/rigid_body.h"
 #include "ECS/Components/transform.h"
+#include "ECS/Events/types/key_pressed.h"
 #include "ECS/Systems/animation.h"
 #include "ECS/Systems/collision.h"
 #include "ECS/Systems/debug.h"
@@ -82,6 +83,7 @@ void Game::ProccessInput() {
       state = State::quit;
       break;
     case SDL_KEYDOWN:
+      event_bus->Emit<KeyPressedEvent>(sdlEvent.key.keysym.sym);
       if (sdlEvent.key.keysym.sym == SDLK_ESCAPE) {
         state = State::quit;
       }
