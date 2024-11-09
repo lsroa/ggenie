@@ -1,8 +1,8 @@
 #pragma once
 #include "ECS/Components/collider.h"
 #include "ECS/Components/transform.h"
-#include "ECS/Events/collision.h"
 #include "ECS/Events/event_bus.h"
+#include "ECS/Events/types/collision.h"
 #include "ECS/ecs.h"
 
 class CollisionSystem : public System {
@@ -18,7 +18,7 @@ class CollisionSystem : public System {
         Entity entity = *i;
 
         const auto &transform = entity.GetComponent<Transform>();
-        const auto &collider = entity.GetComponent<BoxCollider>();
+        auto &collider = entity.GetComponent<BoxCollider>();
 
         for (auto j = i; j != entities.end(); j++) {
           Entity entity_b = *j;
@@ -27,19 +27,24 @@ class CollisionSystem : public System {
             continue;
           }
 
-          const auto &transform_b = entity.GetComponent<Transform>();
-          const auto &collider_b = entity.GetComponent<BoxCollider>();
-          if (is_intercepting(transform.position, transform_b.position, vec2(collider.w, collider.h),
-                              vec2(collider_b.w, collider_b.h))) {
+          const auto &transform_b = entity_b.GetComponent<Transform>();
+          auto &collider_b = entity_b.GetComponent<BoxCollider>();
+          if (is_intercepting(transform.position, transform_b.position, collider, collider_b)) {
             event_bus->Emit<CollisionEvent>(entity, entity_b);
+            collider_b.is_colliding = true;
+            collider.is_colliding = true;
+          } else {
+            collider_b.is_colliding = false;
+            collider.is_colliding = false;
           }
         };
       };
     };
 
   private:
-    bool is_intercepting(vec2 position_a, vec2 position_b, vec2 collider_a, vec2 collider_b) {
-      return (position_a.x + collider_a.x > position_b.x) && (position_a.y < position_b.y + collider_b.y) &&
-             (position_b.y < position_a.y + collider_a.y) && (position_a.x < position_b.x + collider_b.x);
+    bool is_intercepting(vec2 position_a, vec2 position_b, const BoxCollider &collider_a,
+                         const BoxCollider &collider_b) {
+      return (position_a.x < position_b.x + collider_b.w && position_a.x + collider_a.w > position_b.x &&
+              position_a.y < position_b.y + collider_b.h && position_a.y + collider_a.h > position_b.y);
     }
 };

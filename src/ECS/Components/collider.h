@@ -4,6 +4,7 @@
 struct BoxCollider {
     glm::vec2 offset;
     int w, h;
+    bool is_colliding = false;
 
     BoxCollider(int w = 0, int h = 0, glm::vec2 offset = glm::vec2(0)) {
       this->h = h;

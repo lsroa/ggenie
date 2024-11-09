@@ -1,15 +1,14 @@
 #pragma once
 #include "ECS/Components/collider.h"
 #include "ECS/Components/transform.h"
-#include "ECS/Events/collision.h"
 #include "ECS/Events/event_bus.h"
+#include "ECS/Events/types/collision.h"
 #include "ECS/ecs.h"
 #include <SDL_render.h>
 #include <memory>
 
 class DebugSystem : public System {
   public:
-    std::vector<Entity> colliding_entities;
     DebugSystem() {
       RequireComponent<BoxCollider>();
       RequireComponent<Transform>();
@@ -23,11 +22,11 @@ class DebugSystem : public System {
         SDL_Rect box = {static_cast<int>(transform.position.x + collider.offset.x),
                         static_cast<int>(transform.position.y + collider.offset.y), collider.w, collider.h};
 
-        /* if (std::find(colliding_entities.begin(), colliding_entities.end(), entity) != colliding_entities.end()) { */
-        SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-        /* } else { */
-        /*   SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); */
-        /* } */
+        if (collider.is_colliding) {
+          SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+        } else {
+          SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+        }
         SDL_RenderDrawRect(renderer, &box);
       }
     }
@@ -39,7 +38,5 @@ class DebugSystem : public System {
   private:
     void onCollision(CollisionEvent &event) {
       Logger::log("Colliding entities");
-      /* colliding_entities.push_back(event.a); */
-      /* colliding_entities.push_back(event.b); */
     }
 };
