@@ -61,6 +61,10 @@ Entity Registry::CreateEntity() {
   return *entity;
 };
 
+SystemMap Registry::GetAllSystems() const {
+  return this->systems;
+}
+
 void Registry::AddEntityToSystem(Entity entity) {
   const auto entityId = entity.GetId();
   const auto entitySignature = signatures[entityId];

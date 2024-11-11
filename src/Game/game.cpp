@@ -178,7 +178,10 @@ void Game::Update() {
   event_bus->Reset();
 
   /* Register events */
-  registry->GetSystem<DebugSystem>().SubscribeToEvents(event_bus);
+  // NOTE: we could do this for common methods like update
+  for (const auto &system_pair : registry->GetAllSystems()) {
+    system_pair.second->SubscribeToEvents(event_bus);
+  }
 
   /* Call the update of the systems */
   registry->GetSystem<CollisionSystem>().Update(event_bus);

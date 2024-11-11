@@ -1,4 +1,5 @@
 #pragma once
+#include "ECS/Events/event_bus.h"
 #include "Utils/logger.h"
 #include <bitset>
 #include <memory>
@@ -30,6 +31,7 @@ class Component : public IComponent {
 
 class IPool {
   public:
+    // NOTE: if you delete `virtual` does not change anything (?)
     virtual ~IPool(){};
 };
 
@@ -85,7 +87,7 @@ class System {
 
   public:
     System() = default;
-    ~System() = default;
+    virtual ~System() = default;
     void AddEntity(Entity entity);
     void RemoveEntity(Entity entity);
     std::string GetName(std::type_index) const;
@@ -93,6 +95,7 @@ class System {
     Signature GetSignature() const;
     template <typename ComponentType>
     void RequireComponent();
+    virtual void SubscribeToEvents(std::unique_ptr<EventBus> &event_bus) {};
 };
 
 template <typename ComponentType>
@@ -140,6 +143,7 @@ class Entity {
 /**
  *  Class of registry
  */
+typedef std::unordered_map<std::type_index, std::shared_ptr<System>> SystemMap;
 class Registry {
   private:
     // number of Entities
@@ -187,6 +191,7 @@ class Registry {
     bool HasSystem() const;
     template <typename T>
     T &GetSystem() const;
+    SystemMap GetAllSystems() const;
 
     void Update();
 };

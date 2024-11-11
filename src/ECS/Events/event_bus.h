@@ -70,6 +70,11 @@ class EventBus {
     // Iterate over the `EventType` handler and Execute them
     template <typename EventType, typename... TArgs>
     void Emit(TArgs &&...args) {
+      // Check for actual handlers to be registered for the event
+      if (!subscribers[typeid(EventType)].get()) {
+        return;
+      }
+
       EventType event(std::forward<TArgs>(args)...);
       for (const auto &handler : *subscribers[typeid(EventType)]) {
         handler->Execute(event);

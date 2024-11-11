@@ -1,11 +1,8 @@
 #pragma once
 #include "ECS/Components/collider.h"
 #include "ECS/Components/transform.h"
-#include "ECS/Events/event_bus.h"
-#include "ECS/Events/types/collision.h"
 #include "ECS/ecs.h"
 #include <SDL_render.h>
-#include <memory>
 
 class DebugSystem : public System {
   public:
@@ -29,14 +26,5 @@ class DebugSystem : public System {
         }
         SDL_RenderDrawRect(renderer, &box);
       }
-    }
-
-    void SubscribeToEvents(std::unique_ptr<EventBus> &event_bus) {
-      event_bus->Subscribe<CollisionEvent, DebugSystem>(this, &DebugSystem::onCollision);
-    }
-
-  private:
-    void onCollision(CollisionEvent &event) {
-      Logger::log("Colliding entities");
     }
 };
