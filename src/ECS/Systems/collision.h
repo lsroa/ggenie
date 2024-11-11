@@ -29,21 +29,18 @@ class CollisionSystem : public System {
 
           const auto &transform_b = entity_b.GetComponent<Transform>();
           auto &collider_b = entity_b.GetComponent<BoxCollider>();
-          if (is_intercepting(transform.position, transform_b.position, collider, collider_b)) {
+
+          bool is_intercepting = AABB(transform.position, transform_b.position, collider, collider_b);
+          collider.is_colliding = collider_b.is_colliding = is_intercepting;
+          if (is_intercepting) {
             event_bus->Emit<CollisionEvent>(entity, entity_b);
-            collider_b.is_colliding = true;
-            collider.is_colliding = true;
-          } else {
-            collider_b.is_colliding = false;
-            collider.is_colliding = false;
           }
         };
       };
     };
 
   private:
-    bool is_intercepting(vec2 position_a, vec2 position_b, const BoxCollider &collider_a,
-                         const BoxCollider &collider_b) {
+    bool AABB(vec2 position_a, vec2 position_b, const BoxCollider &collider_a, const BoxCollider &collider_b) {
       return (position_a.x < position_b.x + collider_b.w && position_a.x + collider_a.w > position_b.x &&
               position_a.y < position_b.y + collider_b.h && position_a.y + collider_a.h > position_b.y);
     }
