@@ -1,3 +1,4 @@
+#pragma once
 #include "ECS/Events/event_bus.h"
 #include "ECS/Events/types/key_pressed.h"
 #include "ECS/ecs.h"

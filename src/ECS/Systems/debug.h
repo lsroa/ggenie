@@ -2,6 +2,7 @@
 #include "ECS/Components/collider.h"
 #include "ECS/Components/transform.h"
 #include "ECS/ecs.h"
+#include "Graphics/renderer.h"
 #include <SDL_render.h>
 
 class DebugSystem : public System {
@@ -26,5 +27,8 @@ class DebugSystem : public System {
         }
         SDL_RenderDrawRect(renderer, &box);
       }
+    }
+
+    void Update(Renderer *renderer) {
     }
 };
