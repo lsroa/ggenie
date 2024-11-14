@@ -7,7 +7,7 @@ class ShaderUnit {
   public:
     std::filesystem::path file_path;
     unsigned int renderer_id;
-    ShaderUnit(const char *file_path);
+    ShaderUnit(const std::filesystem::path &file_path);
     ~ShaderUnit();
 
     void Compile();

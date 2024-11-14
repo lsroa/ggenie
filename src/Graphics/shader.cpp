@@ -52,7 +52,12 @@ Shader::~Shader() {
   glDeleteProgram(renderer_id);
 }
 
-ShaderUnit::ShaderUnit(const char *file_path) {
+ShaderUnit::ShaderUnit(const std::filesystem::path &file_path) {
+  if (!std::filesystem::exists(file_path)) {
+    Logger::err("File not found" + file_path.string());
+    throw "File not found";
+  }
+
   this->file_path = std::filesystem::path(file_path);
   if (this->file_path.extension() == ".vert") {
     this->renderer_id = glCreateShader(GL_VERTEX_SHADER);
