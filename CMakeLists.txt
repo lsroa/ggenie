@@ -34,6 +34,9 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/glfw-3.4)
 # Add glad library
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/glad)
 
+# Add imgui library
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/imgui)
+
 # Add stb_image library
 target_include_directories(engine PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/libs/stb_image)
 
@@ -51,7 +54,7 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets DESTINATION ${CMAKE_BINARY_DIR})
 target_include_directories(engine PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 if(APPLE)
-  target_link_libraries(engine PRIVATE LDtkLoader glm SDL2_image::SDL2_image SDL2::SDL2 glad glfw ${OpenGL_LIBRARY})
+  target_link_libraries(engine PRIVATE LDtkLoader glm SDL2_image::SDL2_image SDL2::SDL2 glad imgui glfw ${OpenGL_LIBRARY})
 else()
-  target_link_libraries(painter PRIVATE LDtkLoader glm SDL2_image::SDL2_image SDL2::SDL2 glad glfw OpenGL::GL)
+  target_link_libraries(painter PRIVATE LDtkLoader glm SDL2_image::SDL2_image SDL2::SDL2 glad imgui glfw OpenGL::GL)
 endif()

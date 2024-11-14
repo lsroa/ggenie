@@ -14,6 +14,5 @@ class Renderer {
 
   private:
     void render(VertexArray &vao, IndexBuffer &ebo);
+    void renderTexture(const class Texture &texture, const Shader &shader, const glm::vec2 &position);
 };
-
-void renderTexture(const class Texture &texture, const Shader &shader, const glm::vec2 &position);

@@ -1,7 +1,4 @@
 #include "renderer.h"
-#include "glm/ext/matrix_transform.hpp"
-#include "glm/ext/vector_float3.hpp"
-#include "glm/trigonometric.hpp"
 #include "index_buffer.h"
 #include "renderer.h"
 #include "shader.h"
@@ -10,19 +7,27 @@
 #include "vertex_buffer.h"
 #include "vertex_buffer_layout.h"
 
-#include <GLFW/glfw3.h>
-#include <cstdio>
 #include <glad/glad.h>
+
 #include <glm/ext/matrix_clip_space.hpp>
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/ext/vector_float3.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_glfw.h>
+#include <imgui/imgui_impl_opengl3.h>
+
+#include <GLFW/glfw3.h>
+
+#include <cstdio>
 #include <iostream>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-#define WIDTH 600
+#define WIDTH 800
 #define HEIGHT 600
 
 bool wireframe_mode = 0;
@@ -65,6 +70,14 @@ void Renderer::Init() {
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
     std::cout << "Failed to initialize GLAD" << std::endl;
   }
+
+  ImGui::CreateContext();
+  ImGuiIO &io = ImGui::GetIO();
+  (void)io;
+
+  ImGui::StyleColorsDark();
+  ImGui_ImplGlfw_InitForOpenGL(window, true);
+  ImGui_ImplOpenGL3_Init("#version 330");
 }
 
 void Renderer::render(VertexArray &vao, IndexBuffer &ebo) {
@@ -86,10 +99,10 @@ void Renderer::Run() {
   float vertices[] = {
       // clang-format off
       // Position         | Texture coordinates
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left  
-         0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // bottom right 
-        -0.5f,  0.5f, 0.0f, 0.0f, 1.0f, // top left
-         0.5f,  0.5f, 0.0f, 1.0f, 1.0f, // top right
+        -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, // bottom left  
+         1.0f, -1.0f, 0.0f, 1.0f, 0.0f, // bottom right 
+        -1.0f,  1.0f, 0.0f, 0.0f, 1.0f, // top left
+         1.0f,  1.0f, 0.0f, 1.0f, 1.0f, // top right
       // clang-format on
   };
 
@@ -116,46 +129,61 @@ void Renderer::Run() {
   ebo.Unbind();
   vao.Unbind();
 
-  Texture profile("profile.jpeg");
-  Texture alto("alto.jpeg");
+  Texture tilemap("./assets/tilemap_1.png");
 
-  Shader shader({"./shaders/color.frag", "./shaders/default.vert"});
+  Shader shader({"./assets/shaders/color.frag", "./assets/shaders/default.vert"});
   shader.Bind();
   shader.SetUniformi("texture_1", 0);
-  shader.SetUniformi("texture_2", 1);
 
-  glm::mat4 view(1.0f);
   glm::mat4 projection(1.0f);
 
-  projection = glm::ortho(0.0f, (float)WIDTH, (float)HEIGHT, 0.0f, -1.0f, 1.0f);
+  projection = glm::ortho(0.0f, (float)WIDTH, 0.0f, (float)HEIGHT, -1.0f, 1.0f);
   shader.SetMat4("projection", projection);
-  shader.SetMat4("view", view);
+
+  glm::vec3 cameraConfig(0, 0, 0);
 
   while (!glfwWindowShouldClose(window)) {
+
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+
+    {
+      ImGui::NewFrame();
+      ImGui::Begin("Settings");
+      ImGui::Text("Camera");
+      ImGui::InputFloat3("translation", &cameraConfig.x);
+      ImGui::End();
+    }
+
+    ImGui::Render();
+
     glClearColor(0.64, 0.64, 0.65, 1);
     glClear(GL_COLOR_BUFFER_BIT);
 
     float time = (float)glfwGetTime();
+
+    glm::mat4 view = glm::translate(glm::mat4(1), cameraConfig);
     shader.SetUniform1f("iTime", time);
+    shader.SetMat4("view", view);
 
-    renderTexture(profile, shader, glm::vec2(100, 100));
+    renderTexture(tilemap, shader, glm::vec2(WIDTH / 2, HEIGHT / 2));
     render(vao, ebo);
 
-    renderTexture(alto, shader, glm::vec2(200, 100));
-    render(vao, ebo);
-
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     glfwSwapBuffers(window);
     glfwPollEvents();
   }
 
+  ImGui_ImplOpenGL3_Shutdown();
+  ImGui_ImplGlfw_Shutdown();
+  ImGui::DestroyContext();
   glfwTerminate();
 }
 
-void renderTexture(const Texture &texture, const Shader &shader, const glm::vec2 &position) {
+void Renderer::renderTexture(const Texture &texture, const Shader &shader, const glm::vec2 &position) {
   texture.Bind(0);
   glm::mat4 model(1.0f);
   model = glm::translate(model, glm::vec3(position, 0));
-  model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0, 0, 1));
   model = glm::scale(model, glm::vec3(texture.width, texture.height, 0));
 
   shader.SetMat4("model", model);
