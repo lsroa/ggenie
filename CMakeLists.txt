@@ -8,9 +8,11 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Source files
 file(GLOB_RECURSE SRC_FILES src/*.cpp) 
+list(REMOVE_ITEM SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/Graphics/pyrenderer.cpp)
 
 # Build executable
 add_executable(engine ${SRC_FILES})
+add_library(gg_lib SHARED ${SRC_FILES})
 
 if(APPLE)
     include_directories(/opt/homebrew/include)
@@ -38,7 +40,10 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/glad)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/imgui)
 
 # Add stb_image library
-target_include_directories(engine PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/libs/stb_image)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/stb_image)
+
+# Add source includes 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 if (APPLE)
   find_library(OpenGL_LIBRARY OpenGL)
@@ -51,10 +56,31 @@ endif()
 #Copy assets to build directory
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets DESTINATION ${CMAKE_BINARY_DIR})
 
-target_include_directories(engine PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-
 if(APPLE)
-  target_link_libraries(engine PRIVATE LDtkLoader glm SDL2_image::SDL2_image SDL2::SDL2 glad imgui glfw ${OpenGL_LIBRARY})
-else()
-  target_link_libraries(painter PRIVATE LDtkLoader glm SDL2_image::SDL2_image SDL2::SDL2 glad imgui glfw OpenGL::GL)
+  target_link_libraries(gg_lib PUBLIC LDtkLoader glm SDL2_image::SDL2_image SDL2::SDL2 glad imgui glfw ${OpenGL_LIBRARY})
 endif()
+
+target_link_libraries(engine PRIVATE gg_lib)
+
+# Add Python bindings
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/pybind11/include)
+find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
+include_directories(${Python3_INCLUDE_DIRS})
+
+set(PYBIND11_FINDPYTHON ON)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/pybind11)
+include_directories(${PYBIND11_INCLUDE_DIR})
+include_directories(${Python3_INCLUDE_DIRS})
+
+
+pybind11_add_module(gg src/Graphics/pyrenderer.cpp)
+# if(APPLE)
+#   set_target_properties(gg PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+# endif(APPLE)
+target_link_libraries(gg PUBLIC gg_lib Python3::Python)
+install(TARGETS gg DESTINATION .)
+
+add_executable(grapper ${CMAKE_CURRENT_SOURCE_DIR}/bindings/engine.cpp)
+target_link_libraries(grapper PUBLIC gg_lib Python3::Python)
+target_include_directories(grapper PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set_target_properties(grapper PROPERTIES PREFIX "" SUFFIX ".so")
