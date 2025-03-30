@@ -14,6 +14,7 @@ enum class State { running, pause, debug, quit };
 
 class Game {
   public:
+    virtual ~Game() = default;
     State state;
     int width;
     int height;

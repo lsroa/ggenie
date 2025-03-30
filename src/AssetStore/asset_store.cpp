@@ -2,8 +2,8 @@
 #include "Graphics/texture.h"
 #include "Utils/logger.h"
 
-#include <SDL2/SDL_image.h>
 #include <SDL2/SDL_render.h>
+#include <SDL2_image/SDL_image.h>
 #include <string>
 
 template <>
