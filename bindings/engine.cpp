@@ -1,41 +1,26 @@
-#include "ECS/ecs.h"
-#include "Game/sdl_game.h"
-#include "Python.h"
+#include "Graphics/pyrenderer.h"
 
-static PyObject *create_tank(PyObject *self, PyObject *args) {
-  return Py_None;
-}
+#include <_stdlib.h>
+#include <pybind11/embed.h>
 
-static PyMethodDef module_methods[]{{"create_tank", create_tank, METH_NOARGS, "Creates an Entity"},
-                                    {NULL, NULL, 0, NULL}};
-
-static PyModuleDef gg2 = {PyModuleDef_HEAD_INIT, "gg2", NULL, -1, module_methods, NULL, NULL, NULL, NULL};
-
-static PyObject *PyInitGG(void) {
-  return PyModule_Create(&gg2);
-}
+namespace py = pybind11;
 
 int main() {
-  PyObject *pModule;
-  PyObject *pFunc;
+  setenv("PYTHONPATH", ".", 1);
+  py::scoped_interpreter guard{};
 
-  /* PyImport_AppendInittab("gg2", &PyInitGG); */
-  Py_Initialize();
+  try {
+    py::module_ main_module = py::module_::import("main");
+    py::object setup_func = main_module.attr("setup");
 
-  pModule = PyImport_ImportModule("main");
-  if (pModule == NULL) {
-    PyErr_Print();
-    return 1;
+    PyGame game;
+    setup_func(py::cast(&game));
+
+    game.Run();
+
+  } catch (const py::error_already_set &e) {
+    std::cerr << e.what();
   }
 
-  pFunc = PyObject_GetAttrString(pModule, "setup");
-  if (!PyCallable_Check(pFunc) || !pFunc) {
-    PyErr_Print();
-    return 1;
-  }
-
-  PyObject_CallObject(pFunc, NULL);
-
-  Py_Finalize();
   return 0;
 }
