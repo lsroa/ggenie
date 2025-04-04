@@ -5,7 +5,6 @@ SDLGame::SDLGame() {
   registry = std::make_shared<Registry>();
   store = std::make_unique<SDLStore>();
   event_bus = std::make_unique<EventBus>();
-  Init();
 }
 
 SDLGame::~SDLGame() {
