@@ -1,16 +1,13 @@
 from gg import Game, Sprite
 
 
-def setup() -> None:
-    g = Game()
-    tank = g.create_entity()
+def setup(g: Game) -> None:
+
     s = Sprite(id="tank", rect=(10, 10, 10, 10))
-    tank.add(s)
+    for i in range(100):
+        tank_py = g.create_entity()
+        tank_py.add(s)
 
-    print(s.id)
-    print(s.rect)
 
-    print("*********")
-    print(f"entity id: {tank.id}")
-
-    g.run()
+def update() -> None:
+    pass

@@ -56,6 +56,10 @@ endif()
 #Copy assets to build directory
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets DESTINATION ${CMAKE_BINARY_DIR})
 
+#Copy python test scripts
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/bindings/main.py DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/bindings/gg.pyi DESTINATION ${CMAKE_BINARY_DIR})
+
 if(APPLE)
   target_link_libraries(gg_lib PUBLIC LDtkLoader glm SDL2_image::SDL2_image SDL2::SDL2 glad imgui glfw ${OpenGL_LIBRARY})
 endif()
@@ -74,9 +78,6 @@ include_directories(${Python3_INCLUDE_DIRS})
 
 
 pybind11_add_module(gg src/Graphics/pyrenderer.cpp)
-# if(APPLE)
-#   set_target_properties(gg PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
-# endif(APPLE)
 target_link_libraries(gg PUBLIC gg_lib Python3::Python)
 install(TARGETS gg DESTINATION .)
 

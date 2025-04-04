@@ -1,22 +1,15 @@
 from typing import Any, Tuple
 
-class Sprite:
-    def __init__(self, id: str, rect: Tuple[int, int, int, int]): ...
-    id: str
-    path: str
-    rect: Tuple[int, int, int, int]
-
 class Entity:
     id: str
     def add(self, component: Any) -> None: ...
 
 class Game:
-    """SDL Game engine"""
-    def init(self) -> None: ...
-    def run(self) -> None: ...
-    def destroy(self) -> None: ...
     def create_entity(self) -> Entity: ...
 
-def run() -> None: ...
+class Sprite:
+    def __init__(self, id: str, rect: Tuple[int, int, int, int]) -> None: ...
+    id: str
+    rect: Tuple[int, int, int, int]
 
-__all__ = ["Game", "Entity", "run"]
+__all__ = ["Entity", "Game", "Sprite"]
