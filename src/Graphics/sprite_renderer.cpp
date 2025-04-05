@@ -11,7 +11,7 @@ SpriteRenderer::SpriteRenderer() : m_Shader(Shader({"./assets/shaders/color.frag
   IndexBuffer ebo(indices, sizeof(indices));
   VertexBufferLayout layout;
 
-  layout.AddAttribute<float>("position", 3);
+  layout.AddAttribute<float>("position", 2);
   layout.AddAttribute<float>("texture", 2);
 
   VertexArray vao;
