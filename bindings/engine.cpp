@@ -1,26 +1,20 @@
-#include "Graphics/pyrenderer.h"
-
-#include <_stdlib.h>
-#include <pybind11/embed.h>
+#include "engine.h"
+#include <pybind11/pybind11.h>
 
 namespace py = pybind11;
 
-int main() {
-  setenv("PYTHONPATH", ".", 1);
-  py::scoped_interpreter guard{};
+void register_PySprite(py::module_ &m);
+void register_PyEntity(py::module_ &m);
 
-  try {
-    py::module_ main_module = py::module_::import("main");
-    py::object setup_func = main_module.attr("setup");
+PYBIND11_MODULE(gg, m) {
+  m.doc() = "render module";
+  m.def("create_entity", &PyGame::CreateEntity);
 
-    PyGame game;
-    setup_func(py::cast(&game));
+  py::class_<PyGame>(m, "Game")
+      .def(py::init())          //
+      .def("run", &PyGame::Run) //
+      .def("create_entity", &PyGame::CreateEntity);
 
-    game.Run();
-
-  } catch (const py::error_already_set &e) {
-    std::cerr << e.what();
-  }
-
-  return 0;
+  register_PyEntity(m);
+  register_PySprite(m);
 }
