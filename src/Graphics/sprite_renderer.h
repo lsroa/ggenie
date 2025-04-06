@@ -1,11 +1,13 @@
 #pragma once
 
+#include "Graphics/index_buffer.h"
 #include "Graphics/shader.h"
 #include "Graphics/vertex_array.h"
 
 class SpriteRenderer {
   private:
     VertexArray m_Vao;
+    IndexBuffer m_Ebo;
     Shader m_Shader;
     static constexpr float quad[] = {
         -1.0f, -1.0f, 0.0f, 0.0f, // bottom left

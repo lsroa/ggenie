@@ -1,6 +1,7 @@
 #pragma once
 #include "ECS/Events/event_bus.h"
 #include "Utils/logger.h"
+
 #include <bitset>
 #include <memory>
 #include <regex>
@@ -32,7 +33,7 @@ class Component : public IComponent {
 class IPool {
   public:
     // NOTE: if you delete `virtual` does not change anything (?)
-    virtual ~IPool(){};
+    virtual ~IPool() {};
 };
 
 template <typename T>
@@ -109,7 +110,7 @@ class Entity {
     int id;
 
   public:
-    Entity(int id) : id(id){};
+    Entity(int id) : id(id) {};
     int GetId() const;
     class Registry *registry;
     void KillEntity();

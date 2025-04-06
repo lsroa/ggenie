@@ -1,9 +1,11 @@
 #include "texture.h"
 #include "Utils/logger.h"
+
+#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+
 #include <OpenGL/gl.h>
 #include <cassert>
-#include <glad/glad.h>
 
 Texture::Texture(const char *file_path) {
   if (!std::filesystem::exists(file_path)) {
@@ -19,8 +21,8 @@ Texture::Texture(const char *file_path) {
   glBindTexture(GL_TEXTURE_2D, texture);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
   this->Load();
 }
@@ -35,7 +37,8 @@ void Texture::Load() {
   int width, height;
   int depth;
 
-  int TYPE = this->file_path.extension() == ".png" ? GL_RGBA : GL_RGB;
+  /* int TYPE = this->file_path.extension() == ".png" ? GL_RGBA : GL_RGB; */
+  int TYPE = GL_RGB;
 
   stbi_set_flip_vertically_on_load(true);
   unsigned char *data = stbi_load(file_path.c_str(), &width, &height, &depth, 0);

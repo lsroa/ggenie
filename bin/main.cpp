@@ -1,4 +1,4 @@
-#include "Graphics/renderer.h"
+#include "Utils/logger.h"
 #include "engine.h"
 
 #include <_stdlib.h>
@@ -21,15 +21,15 @@ int main(int argc, char *argv[]) {
       game.Run();
 
     } catch (const py::error_already_set &e) {
-      std::cerr << e.what();
+      Logger::err(e.what());
     }
   }
 
-  if (argc > 1 && std::string(argv[1]) == "renderer") {
-    Renderer renderer;
-    renderer.Init();
-    renderer.Run();
-  }
+  /* if (argc > 1 && std::string(argv[1]) == "renderer") { */
+  /*   Renderer renderer; */
+  /*   renderer.Init(); */
+  /*   renderer.Run(); */
+  /* } */
 
   return 0;
 }

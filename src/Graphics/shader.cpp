@@ -6,6 +6,7 @@
 #include <initializer_list>
 
 Shader::Shader(std::initializer_list<std::string> &&shaders) {
+  Logger::info("Shader spawn");
   int success;
   char info[512];
 

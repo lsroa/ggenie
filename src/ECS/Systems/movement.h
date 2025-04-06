@@ -16,7 +16,8 @@ class MovementSystem : public System {
         auto &transform = entity.GetComponent<Transform>();
         const auto [velocity] = entity.GetComponent<RigidBody>();
 
-        transform.position += velocity * static_cast<float>(delta_time);
+        /* transform.position += velocity * static_cast<float>(delta_time); */
+        transform.position += velocity;
       }
     }
 };

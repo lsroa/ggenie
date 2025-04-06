@@ -1,10 +1,12 @@
-#include "Game/sdl_game.h"
+#pragma once
+
+#include "Game/game.h"
 
 class PyGame {
   public:
-    std::shared_ptr<SDLGame> m_Game;
+    std::shared_ptr<Game> m_Game;
     PyGame() {
-      m_Game = std::make_shared<SDLGame>();
+      m_Game = std::make_shared<Game>();
       m_Game->Init();
     }
 
