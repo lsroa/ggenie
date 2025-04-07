@@ -73,7 +73,7 @@ Game::Game() {
 
 void Game::Run() {
   Setup();
-  while (state == State::running || state == State::debug) {
+  while ((state == State::running || state == State::debug) && !glfwWindowShouldClose(window)) {
     ProccessInput();
     Update();
     Render();
