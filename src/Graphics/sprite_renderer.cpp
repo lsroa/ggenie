@@ -4,6 +4,7 @@
 #include "Utils/logger.h"
 #include <glad/glad.h>
 
+#include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
 SpriteRenderer::SpriteRenderer()
@@ -23,6 +24,9 @@ SpriteRenderer::SpriteRenderer()
 };
 
 void SpriteRenderer::render(const Texture *texture, const glm::vec2 &position) const {
+  glm::mat4 projection(1.0f);
+  projection = glm::ortho(0.0f, (float)800, 0.0f, (float)600, -1.0f, 1.0f);
+
   m_Vao.Bind();
   m_Ebo.Bind();
 
@@ -37,6 +41,7 @@ void SpriteRenderer::render(const Texture *texture, const glm::vec2 &position) c
 
   m_Shader.Bind();
   m_Shader.SetMat4("model", model);
+  m_Shader.SetMat4("projection", projection);
 
   glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
