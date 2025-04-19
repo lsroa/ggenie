@@ -11,7 +11,7 @@ void VertexArray::Bind() const {
   glBindVertexArray(this->renderer_id);
 }
 
-void VertexArray::Unbind() {
+void VertexArray::Unbind() const {
   glBindVertexArray(0);
 }
 
@@ -21,8 +21,8 @@ VertexArray::~VertexArray() {
 
 void VertexArray::AddLayout(VertexBuffer &vbo, VertexBufferLayout &layout) const {
   Logger::info("Add layout");
-  vbo.Bind();
   this->Bind();
+  vbo.Bind();
 
   for (int i = 0; i < layout.GetAttributes().size(); i++) {
     const auto &attribute = layout.GetAttributes()[i];

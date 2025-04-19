@@ -12,5 +12,5 @@ class VertexArray {
 
     void AddLayout(VertexBuffer &vbo, VertexBufferLayout &layout) const;
     void Bind() const;
-    void Unbind();
+    void Unbind() const;
 };
