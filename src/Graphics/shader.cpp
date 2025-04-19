@@ -11,6 +11,10 @@ Shader::Shader(std::initializer_list<std::string> &&shaders) {
   char info[512];
 
   this->renderer_id = glCreateProgram();
+  if (this->renderer_id == 0) {
+    Logger::err("Failed to create shader program");
+    assert(false);
+  }
 
   for (const auto &file_path : shaders) {
     ShaderUnit shader(file_path.c_str());
@@ -28,11 +32,12 @@ Shader::Shader(std::initializer_list<std::string> &&shaders) {
   if (!success) {
     glGetProgramInfoLog(renderer_id, 512, NULL, info);
     Logger::err("Error linking program_" + std::to_string(this->renderer_id) + "\n" + std::string(info));
-    return;
+    assert(false);
   }
 }
 
 void Shader::Bind() const {
+  Logger::info("Binding shader " + std::to_string(this->renderer_id));
   glUseProgram(renderer_id);
 }
 
