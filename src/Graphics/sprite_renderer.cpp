@@ -1,11 +1,18 @@
 #include "sprite_renderer.h"
 
+#include "GLFW/glfw3.h"
 #include "Graphics/texture.h"
 #include "Utils/logger.h"
 #include <glad/glad.h>
 
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
+
+#define GL_ERR_CHECK(label)                                                                                            \
+  while (GLenum err = glGetError()) {                                                                                  \
+    Logger::err(std::string(label) + " GL Error: " + std::to_string(err));                                             \
+    assert(false);                                                                                                     \
+  }
 
 SpriteRenderer::SpriteRenderer()
     : m_Vbo(nullptr, 0), m_Ebo(nullptr, 0),
@@ -23,24 +30,40 @@ SpriteRenderer::SpriteRenderer()
 };
 
 void SpriteRenderer::render(const Texture *texture, const glm::vec2 &position) const {
-  glm::mat4 projection(1.0f);
-  projection = glm::ortho(0.0f, (float)800, 0.0f, (float)600, -1.0f, 1.0f);
-
-  m_Vao.Bind();
-  m_Ebo.Bind();
-
   if (texture == nullptr) {
     Logger::err("Texture not found");
     return;
   }
-  texture->Bind(0);
+
+  m_Vao.Bind();
+  GL_ERR_CHECK("Bind vao");
+
+  m_Shader.Bind();
+  GL_ERR_CHECK("Bind shader");
+
+  glm::mat4 projection = glm::ortho(-400.0f, 400.0f, -300.0f, 300.0f, -1.0f, 1.0f);
+  glm::mat4 view = glm::translate(glm::mat4(1), glm::vec3(0, 0, 0));
   glm::mat4 model(1.0f);
   model = glm::translate(model, glm::vec3(position, 0));
   model = glm::scale(model, glm::vec3(texture->width, texture->height, 0));
 
-  m_Shader.Bind();
+  m_Shader.SetUniformi("texture_1", 0);
+  GL_ERR_CHECK("Set uniform texture_1");
   m_Shader.SetMat4("model", model);
+  GL_ERR_CHECK("Set uniform model");
   m_Shader.SetMat4("projection", projection);
+  GL_ERR_CHECK("Set uniform projection");
+  m_Shader.SetMat4("view", view);
+  GL_ERR_CHECK("Set uniform view");
+  m_Shader.SetUniform1f("iTime", float(glfwGetTime()));
+  GL_ERR_CHECK("Set uniform iTime");
+
+  texture->Bind(0);
+  GL_ERR_CHECK("Bind texture");
+
+  m_Ebo.Bind();
+  GL_ERR_CHECK("Bind ebo");
 
   glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+  GL_ERR_CHECK("Draw elements");
 }
