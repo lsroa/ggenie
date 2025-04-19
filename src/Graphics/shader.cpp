@@ -37,7 +37,6 @@ Shader::Shader(std::initializer_list<std::string> &&shaders) {
 }
 
 void Shader::Bind() const {
-  Logger::info("Binding shader " + std::to_string(this->renderer_id));
   glUseProgram(renderer_id);
 }
 
