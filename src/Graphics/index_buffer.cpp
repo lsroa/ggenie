@@ -6,7 +6,7 @@ IndexBuffer::IndexBuffer(const void *data, unsigned int count) {
   glGenBuffers(1, &renderer_id);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderer_id);
   // this count works over indices not vertices
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, count, data, GL_STATIC_DRAW);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), data, GL_STATIC_DRAW);
 }
 
 IndexBuffer::~IndexBuffer() {
