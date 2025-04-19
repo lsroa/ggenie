@@ -18,7 +18,7 @@
 
 #include <memory>
 
-#define SCALE 3
+#define SCALE 1
 
 const int FPS = 60;
 const int MPF = 1000 / FPS;
@@ -70,16 +70,19 @@ class Game {
       }
 
       /* Call the update of the systems */
-      registry->GetSystem<CollisionSystem>().Update(event_bus);
+      // registry->GetSystem<CollisionSystem>().Update(event_bus);
       /* registry->GetSystem<MovementSystem>().Update(delta); */
-      registry->GetSystem<AnimationSystem>().Update();
+      // registry->GetSystem<AnimationSystem>().Update();
 
       /* Add batched entities */
       registry->Update();
     };
 
     void Render() {
-      /* registry->GetSystem<RenderSystem>().Update(renderer, store); */
+      glClearColor(0.64, 0.64, 0.65, 1);
+      glClear(GL_COLOR_BUFFER_BIT);
+
+      registry->GetSystem<RenderSystem>().Update(renderer, store);
 
       if (state == State::debug) {
         /* registry->GetSystem<DebugSystem>().Update(renderer); */
@@ -94,7 +97,7 @@ class Game {
       glfwSwapBuffers(window);
     };
 
-    void ProccessInput() {
+    void ProccessInput(){
 
     };
 
@@ -102,58 +105,58 @@ class Game {
       Logger::info("Loading level " + std::to_string(levelId));
 
       /* Register systems */
-      registry->AddSystem<MovementSystem>();
+      // registry->AddSystem<MovementSystem>();
       registry->AddSystem<RenderSystem>();
-      registry->AddSystem<AnimationSystem>();
-      registry->AddSystem<CollisionSystem>();
+      // registry->AddSystem<AnimationSystem>();
+      // registry->AddSystem<CollisionSystem>();
       /* registry->AddSystem<DebugSystem>(); */
-      registry->AddSystem<InputSystem>();
+      // registry->AddSystem<InputSystem>();
 
-      store->AddTexture(renderer, "tilemap", "./assets/tilemap_1.png");
+      // store->AddTexture(renderer, "tilemap", "./assets/tilemap_1.png");
       store->AddTexture(renderer, "tank", "./assets/tank.png");
 
       /* Load ldtk */
-      ldtk::Project ldtk_project;
-      ldtk_project.loadFromFile("./assets/tank_wars.ldtk");
+      // ldtk::Project ldtk_project;
+      // ldtk_project.loadFromFile("./assets/tank_wars.ldtk");
 
-      const auto &world = ldtk_project.getWorld();
+      // const auto &world = ldtk_project.getWorld();
 
-      const auto &level = world.getLevel(levelId);
+      // const auto &level = world.getLevel(levelId);
 
-      const auto &layers = level.allLayers();
+      // const auto &layers = level.allLayers();
 
-      std::vector<std::string> layer_names;
-      std::transform(layers.rbegin(), layers.rend(), std::back_inserter(layer_names),
-                     [](const ldtk::Layer &l) { return l.getName(); });
+      // std::vector<std::string> layer_names;
+      // std::transform(layers.rbegin(), layers.rend(), std::back_inserter(layer_names),
+      //                [](const ldtk::Layer &l) { return l.getName(); });
 
-      for (const auto &layer_id : layer_names) {
+      // for (const auto &layer_id : layer_names) {
 
-        const auto &layer = level.getLayer(layer_id);
+      //   const auto &layer = level.getLayer(layer_id);
 
-        if (!layer.isVisible()) {
-          continue;
-        }
+      //   if (!layer.isVisible()) {
+      //     continue;
+      //   }
 
-        const auto &tiles_vector = layer.allTiles();
+      //   const auto &tiles_vector = layer.allTiles();
 
-        for (ldtk::Tile tile : tiles_vector) {
-          auto tile_entity = registry->CreateEntity();
-          auto [x, y] = tile.getPosition();
-          auto [tx, ty, w, h] = tile.getTextureRect();
-          tile_entity.AddComponent<Transform>(glm::vec2(x * SCALE, y * SCALE));
-          tile_entity.AddComponent<Sprite>("tilemap", tx, ty, w, h, glm::vec2(SCALE));
-        }
-      }
+      //   for (ldtk::Tile tile : tiles_vector) {
+      //     auto tile_entity = registry->CreateEntity();
+      //     auto [x, y] = tile.getPosition();
+      //     auto [tx, ty, w, h] = tile.getTextureRect();
+      //     tile_entity.AddComponent<Transform>(glm::vec2(x * SCALE, y * SCALE));
+      //     tile_entity.AddComponent<Sprite>("tilemap", tx, ty, w, h, glm::vec2(SCALE));
+      //   }
+      // }
 
       auto tank_1 = registry->CreateEntity();
-      tank_1.AddComponent<Transform>(glm::vec2(1.0));
+      tank_1.AddComponent<Transform>(glm::vec2(0.0, 0.0));
       tank_1.AddComponent<RigidBody>(glm::vec2(30.0, 0.0));
       tank_1.AddComponent<Sprite>("tank", 0, 16, 16, 16, glm::vec2(SCALE));
       tank_1.AddComponent<Animation>(2, 4);
       tank_1.AddComponent<BoxCollider>(16 * SCALE, 16 * SCALE);
 
       auto tank_2 = registry->CreateEntity();
-      tank_2.AddComponent<Transform>(glm::vec2(300.0, 0.0));
+      tank_2.AddComponent<Transform>(glm::vec2(100.0, 0.0));
       tank_2.AddComponent<RigidBody>(glm::vec2(-30.0, 0.0));
       tank_2.AddComponent<Sprite>("tank", 0, 16, 16, 16, glm::vec2(SCALE), true);
       tank_2.AddComponent<Animation>(2, 4);
