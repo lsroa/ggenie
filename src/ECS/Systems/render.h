@@ -15,7 +15,7 @@ class RenderSystem : public System {
       RequireComponent<Transform>();
     }
 
-    void Update(std::shared_ptr<SpriteRenderer> renderer, std::shared_ptr<Store> &store) const {
+    void Update(std::shared_ptr<SpriteRenderer> &renderer, std::shared_ptr<Store> &store) const {
       for (auto entity : GetEntities()) {
         const auto &sprite = entity.GetComponent<Sprite>();
         const auto &position = entity.GetComponent<Transform>().position;
