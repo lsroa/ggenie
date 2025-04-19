@@ -6,10 +6,12 @@
 
 class SpriteRenderer {
   private:
+    VertexBuffer m_Vbo;
     VertexArray m_Vao;
     IndexBuffer m_Ebo;
     Shader m_Shader;
     static constexpr float quad[] = {
+        // Position | Texture coordinates
         -1.0f, -1.0f, 0.0f, 0.0f, // bottom left
         1.0f,  -1.0f, 1.0f, 0.0f, // bottom right
         -1.0f, 1.0f,  0.0f, 1.0f, // top left

@@ -8,19 +8,18 @@
 #include <glm/ext/matrix_transform.hpp>
 
 SpriteRenderer::SpriteRenderer()
-    : m_Ebo(nullptr, 0), m_Shader(Shader({"./assets/shaders/color.frag", "./assets/shaders/default.vert"})) {
+    : m_Vbo(nullptr, 0), m_Ebo(nullptr, 0),
+      m_Shader(Shader({"./assets/shaders/color.frag", "./assets/shaders/default.vert"})) {
   Logger::info("Sprite renderer spawn");
-  VertexBuffer vbo(quad, sizeof(quad));
+  this->m_Vbo = VertexBuffer(quad, sizeof(quad));
   this->m_Ebo = IndexBuffer(indices, sizeof(indices));
   VertexBufferLayout layout;
 
   layout.AddAttribute<float>("position", 2);
-  layout.AddAttribute<float>("texture", 2);
+  layout.AddAttribute<float>("texture_coordinates", 2);
 
-  VertexArray vao;
-  vao.AddLayout(vbo, layout);
-
-  this->m_Vao = vao;
+  this->m_Vao = VertexArray();
+  this->m_Vao.AddLayout(m_Vbo, layout);
 };
 
 void SpriteRenderer::render(const Texture *texture, const glm::vec2 &position) const {
