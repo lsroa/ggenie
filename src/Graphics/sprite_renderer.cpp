@@ -15,11 +15,9 @@
   }
 
 SpriteRenderer::SpriteRenderer()
-    : m_Vbo(nullptr, 0), m_Ebo(nullptr, 0),
+    : m_Vbo(quad, sizeof(quad)), m_Vao(), m_Ebo(indices, sizeof(indices)),
       m_Shader(Shader({"./assets/shaders/color.frag", "./assets/shaders/default.vert"})) {
   Logger::info("Sprite renderer spawn");
-  this->m_Vbo = VertexBuffer(quad, sizeof(quad));
-  this->m_Ebo = IndexBuffer(indices, sizeof(indices));
   VertexBufferLayout layout;
 
   layout.AddAttribute<float>("position", 2);
