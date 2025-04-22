@@ -80,3 +80,12 @@ install(TARGETS gg DESTINATION .)
 add_executable(engine bin/main.cpp)
 target_include_directories(engine PUBLIC bindings)
 target_link_libraries(engine PUBLIC gg_core pybind11::embed ${Python3_LIBRARIES})
+
+
+add_custom_target(
+  copy_assets
+  ALL
+  COMMAND ${CMAKE_COMMAND} -E copy_directory
+  ${CMAKE_CURRENT_SOURCE_DIR}/assets 
+  ${CMAKE_BINARY_DIR}/assets
+)
