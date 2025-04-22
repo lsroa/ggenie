@@ -26,7 +26,7 @@ class RenderSystem : public System {
           Logger::err("texture not found: " + sprite.id);
         }
 
-        renderer->render(texture, glm::vec2(position.x, position.y));
+        renderer->render(texture, sprite, position);
       }
     }
 };

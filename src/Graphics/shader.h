@@ -21,5 +21,7 @@ class Shader {
     void SetUniform1f(const char *name, float value) const;
     void SetUniformi(const char *name, unsigned int slot) const;
     void SetMat4(const char *name, const glm::mat4 &matrix) const;
+    void SetVec4(const char *name, const glm::vec4 &value) const;
+    void SetVec2(const char *name, const glm::vec2 &value) const;
     void Bind() const;
 };

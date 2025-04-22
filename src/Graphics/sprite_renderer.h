@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ECS/Components/sprite.h"
 #include "Graphics/index_buffer.h"
 #include "Graphics/shader.h"
 #include "Graphics/vertex_array.h"
@@ -22,5 +23,5 @@ class SpriteRenderer {
   public:
     SpriteRenderer();
     ~SpriteRenderer() = default;
-    void render(const class Texture *texture, const glm::vec2 &position) const;
+    void render(const class Texture *texture, const Sprite &sprite, const glm::vec2 &position) const;
 };
