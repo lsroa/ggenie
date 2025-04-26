@@ -11,10 +11,6 @@ if(APPLE)
     link_directories(/opt/homebrew/lib)
 endif()
 
-# Find SDL2 and SDL2_image libraries
-find_package(SDL2 REQUIRED)
-find_package(SDL2_image REQUIRED)
-
 # Find LDtkLoader library
 set(LDtkLoader_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libs/ldtk/lib/cmake/LDtkLoader)
 find_package(LDtkLoader 1.4)
@@ -58,7 +54,9 @@ file(GLOB_RECURSE SRC_FILES src/*.cpp)
 add_library(gg_core SHARED ${SRC_FILES})
 
 if(APPLE)
-  target_link_libraries(gg_core PUBLIC LDtkLoader glm SDL2_image::SDL2_image SDL2::SDL2 glad imgui glfw ${OpenGL_LIBRARY})
+  target_link_libraries(gg_core PUBLIC LDtkLoader glm glad imgui glfw ${OpenGL_LIBRARY})
+else()
+  target_link_libraries(gg_core PUBLIC LDtkLoader glm glad imgui glfw OpenGL)
 endif()
 
 # Add Python bindings
