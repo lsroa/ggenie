@@ -1,5 +1,5 @@
 #pragma once
-#include "glad/glad.h"
+#include <string>
 #include <vector>
 
 struct Attribute {
@@ -19,15 +19,9 @@ class VertexBufferLayout {
     ~VertexBufferLayout() = default;
 
     template <typename T>
-    void AddAttribute(const char *name, unsigned int count) {};
+    void AddAttribute(const char *name, unsigned int count){};
 
     const std::vector<Attribute> &GetAttributes() const {
       return attributes;
-    }
-
-    template <>
-    void AddAttribute<float>(const char *name, unsigned int count) {
-      this->attributes.push_back({.name = name, .type = GL_FLOAT, .count = count, .offset = this->stride});
-      this->stride += sizeof(float) * count;
     }
 };

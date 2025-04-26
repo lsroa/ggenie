@@ -1,24 +1,21 @@
 #pragma once
 
-#include "Graphics/renderer.h"
-
-#include "SDL2/SDL_render.h"
+#include "Graphics/sprite_renderer.h"
+#include "Graphics/texture.h"
 
 #include <filesystem>
 #include <map>
+#include <memory>
 
-template <typename TextureType, typename Renderer>
 class Store {
   private:
-    std::map<std::string, TextureType *> textures;
+    std::map<std::string, Texture *> textures;
 
   public:
     Store() = default;
     ~Store() = default;
-    void AddTexture(Renderer *renderer, const std::string &assetId, const std::filesystem::path &path);
-    TextureType *GetTexture(const std::string &id);
+    void AddTexture(std::shared_ptr<SpriteRenderer> renderer, const std::string &assetId,
+                    const std::filesystem::path &path);
+    Texture *GetTexture(const std::string &id);
     void ClearTextures();
 };
-
-typedef Store<Texture, Renderer> GLStore;
-typedef Store<SDL_Texture, SDL_Renderer> SDLStore;

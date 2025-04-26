@@ -6,10 +6,15 @@
 #include <initializer_list>
 
 Shader::Shader(std::initializer_list<std::string> &&shaders) {
+  Logger::info("Shader spawn");
   int success;
   char info[512];
 
   this->renderer_id = glCreateProgram();
+  if (this->renderer_id == 0) {
+    Logger::err("Failed to create shader program");
+    assert(false);
+  }
 
   for (const auto &file_path : shaders) {
     ShaderUnit shader(file_path.c_str());
@@ -27,7 +32,7 @@ Shader::Shader(std::initializer_list<std::string> &&shaders) {
   if (!success) {
     glGetProgramInfoLog(renderer_id, 512, NULL, info);
     Logger::err("Error linking program_" + std::to_string(this->renderer_id) + "\n" + std::string(info));
-    return;
+    assert(false);
   }
 }
 
@@ -37,6 +42,14 @@ void Shader::Bind() const {
 
 void Shader::SetMat4(const char *name, const glm::mat4 &matrix) const {
   glUniformMatrix4fv(glGetUniformLocation(this->renderer_id, name), 1, GL_FALSE, &matrix[0][0]);
+}
+
+void Shader::SetVec4(const char *name, const glm::vec4 &value) const {
+  glUniform4fv(glGetUniformLocation(this->renderer_id, name), 1, &value[0]);
+}
+
+void Shader::SetVec2(const char *name, const glm::vec2 &value) const {
+  glUniform2fv(glGetUniformLocation(this->renderer_id, name), 1, &value[0]);
 }
 
 void Shader::SetUniform1f(const char *name, float value) const {

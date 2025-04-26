@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.10)
 project(ggenie)
 
 # Set compiler and flags
@@ -10,10 +10,6 @@ if(APPLE)
     include_directories(/opt/homebrew/include)
     link_directories(/opt/homebrew/lib)
 endif()
-
-# Find SDL2 and SDL2_image libraries
-find_package(SDL2 REQUIRED)
-find_package(SDL2_image REQUIRED)
 
 # Find LDtkLoader library
 set(LDtkLoader_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libs/ldtk/lib/cmake/LDtkLoader)
@@ -58,12 +54,17 @@ file(GLOB_RECURSE SRC_FILES src/*.cpp)
 add_library(gg_core SHARED ${SRC_FILES})
 
 if(APPLE)
-  target_link_libraries(gg_core PUBLIC LDtkLoader glm SDL2_image::SDL2_image SDL2::SDL2 glad imgui glfw ${OpenGL_LIBRARY})
+  target_link_libraries(gg_core PUBLIC LDtkLoader glm glad imgui glfw ${OpenGL_LIBRARY})
+else()
+  target_link_libraries(gg_core PUBLIC LDtkLoader glm glad imgui glfw OpenGL)
 endif()
 
 # Add Python bindings
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/pybind11/include)
-find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
+find_package(Python3 3.11 REQUIRED COMPONENTS Interpreter Development)
+set(PYTHON_EXECUTABLE ${Python3_EXECUTABLE})
+set(PYTHON_INCLUDE_DIRS ${Python3_INCLUDE_DIRS})
+set(PYTHON_LIBRARIES ${Python3_LIBRARIES})
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libs/pybind11)
 include_directories(${PYBIND11_INCLUDE_DIR})
@@ -71,9 +72,18 @@ include_directories(${Python3_INCLUDE_DIRS})
 
 FILE(GLOB BINDINGS_SRC bindings/*.cpp)
 pybind11_add_module(gg ${BINDINGS_SRC})
-target_link_libraries(gg PUBLIC gg_core Python3::Python)
+target_link_libraries(gg PUBLIC gg_core ${Python3_LIBRARIES})
 install(TARGETS gg DESTINATION .)
 
 add_executable(engine bin/main.cpp)
-target_include_directories(engine PRIVATE bindings)
-target_link_libraries(engine PRIVATE gg_core pybind11::embed)
+target_include_directories(engine PUBLIC bindings)
+target_link_libraries(engine PUBLIC gg_core pybind11::embed ${Python3_LIBRARIES})
+
+
+add_custom_target(
+  copy_assets
+  ALL
+  COMMAND ${CMAKE_COMMAND} -E copy_directory
+  ${CMAKE_CURRENT_SOURCE_DIR}/assets 
+  ${CMAKE_BINARY_DIR}/assets
+)

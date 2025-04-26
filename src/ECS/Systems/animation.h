@@ -3,8 +3,6 @@
 #include "ECS/Components/sprite.h"
 #include "ECS/ecs.h"
 
-#include <SDL2/SDL_timer.h>
-
 class AnimationSystem : public System {
   public:
     AnimationSystem() {
@@ -21,8 +19,9 @@ class AnimationSystem : public System {
           continue;
         }
 
-        animation.current_frame =
-            (SDL_GetTicks() - animation.start_time) * animation.speed / 1000 % animation.total_frames;
+        animation.current_frame = 0;
+        /* (static_cast<int>(glfwGetTime()) - animation.start_time) * animation.speed / 1000 % animation.total_frames;
+         */
 
         sprite.x = animation.current_frame * sprite.w;
       }
