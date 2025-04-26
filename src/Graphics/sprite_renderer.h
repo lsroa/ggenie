@@ -4,6 +4,8 @@
 #include "Graphics/index_buffer.h"
 #include "Graphics/shader.h"
 #include "Graphics/vertex_array.h"
+#include "glm/ext/matrix_clip_space.hpp"
+#include "glm/ext/matrix_transform.hpp"
 
 class SpriteRenderer {
   private:
@@ -19,6 +21,8 @@ class SpriteRenderer {
         1.0f,  1.0f,  1.0f, 1.0f, // top right
     };
     static constexpr unsigned int indices[] = {0, 1, 3, 0, 2, 3};
+    static const glm::mat4 projection;
+    static const glm::mat4 view;
 
   public:
     SpriteRenderer();
