@@ -1,5 +1,5 @@
 #pragma once
-#include <SDL2/SDL_timer.h>
+#include "GLFW/glfw3.h"
 
 struct Animation {
     int total_frames;
@@ -12,7 +12,7 @@ struct Animation {
       this->total_frames = total_frames;
       this->current_frame = 1;
       this->speed = speed;
-      this->start_time = SDL_GetTicks();
+      this->start_time = glfwGetTime();
       this->is_loop = is_loop;
     }
 };
