@@ -1,7 +1,22 @@
 #include "ecs.h"
+#include "Components/animation.h"
+#include "Components/sprite.h"
+#include "Components/transform.h"
+
 #include <regex>
 
 int IComponent::nextId = 0;
+
+/* Component */
+template <typename ComponentType>
+int Component<ComponentType>::GetId() {
+  static int id = nextId++;
+  return id;
+}
+
+template class Component<Sprite>;
+template class Component<Transform>;
+template class Component<Animation>;
 
 /* Entity */
 int Entity::GetId() const {
@@ -67,7 +82,9 @@ SystemMap Registry::GetAllSystems() const {
 
 void Registry::AddEntityToSystem(Entity entity) {
   const auto entityId = entity.GetId();
+  Logger::log("Entity id: " + std::to_string(entityId));
   const auto entitySignature = signatures[entityId];
+  Logger::log("Entity shape: " + entitySignature.to_string());
 
   for (auto &[system_type, system] : systems) {
     const auto systemSignature = system->GetSignature();

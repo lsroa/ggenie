@@ -22,12 +22,7 @@ class IComponent {
 template <typename ComponentType>
 class Component : public IComponent {
   public:
-    static int GetId() {
-      /* this static makes the id to be "cached" for the next call of the
-       * function */
-      static auto id = nextId++;
-      return id;
-    }
+    static int GetId();
 };
 
 class IPool {
