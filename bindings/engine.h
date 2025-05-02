@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Game/game.h"
+#include <functional>
 
 class PyGame {
   public:
@@ -8,6 +9,10 @@ class PyGame {
     PyGame() {
       m_Game = std::make_shared<Game>();
       m_Game->Init();
+    }
+
+    void AssignUpdate(std::function<void(float)> func) {
+      m_Game->update_func = func;
     }
 
     void Run() {

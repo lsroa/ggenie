@@ -11,5 +11,5 @@ def setup(g: Game) -> None:
     tank.add(t)
 
 
-def update() -> None:
-    pass
+def update(delta: float) -> None:
+    print(delta)

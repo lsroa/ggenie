@@ -45,6 +45,7 @@ class Game {
     void Setup();
     void Run();
     void Init();
+    std::function<void(float)> update_func;
 
     void Destroy() {
       ImGui_ImplOpenGL3_Shutdown();
@@ -56,6 +57,10 @@ class Game {
     void Update() {
       float delta = (float)glfwGetTime() - this->lastFrame;
       this->lastFrame = (float)glfwGetTime();
+
+      if (update_func != nullptr) {
+        this->update_func(delta);
+      }
       /* int time = MPF - (current - ms); */
       /* if (time > 0) { */
       /*   SDL_Delay(time); */
@@ -150,17 +155,17 @@ class Game {
         }
       }
 
-      auto tank_1 = registry->CreateEntity();
-      tank_1.AddComponent<Transform>(glm::vec2(0.0, 0.0));
+      /* auto tank_1 = registry->CreateEntity(); */
+      /* tank_1.AddComponent<Transform>(glm::vec2(0.0, 0.0)); */
       /* tank_1.AddComponent<RigidBody>(glm::vec2(1.0, 0.0)); */
-      tank_1.AddComponent<Sprite>("tank", 0, 16, 16, 16, glm::vec2(SCALE));
+      /* tank_1.AddComponent<Sprite>("tank", 0, 16, 16, 16, glm::vec2(SCALE)); */
       /* tank_1.AddComponent<Animation>(2, 4); */
       /* tank_1.AddComponent<BoxCollider>(16 * SCALE, 16 * SCALE); */
 
-      auto tank_2 = registry->CreateEntity();
-      tank_2.AddComponent<Transform>(glm::vec2(100, 0));
+      /* auto tank_2 = registry->CreateEntity(); */
+      /* tank_2.AddComponent<Transform>(glm::vec2(100, 0)); */
       /* tank_2.AddComponent<RigidBody>(glm::vec2(-1.0, 0.0)); */
-      tank_2.AddComponent<Sprite>("tank", 0, 16, 16, 16, glm::vec2(SCALE), true);
+      /* tank_2.AddComponent<Sprite>("tank", 0, 16, 16, 16, glm::vec2(SCALE), true); */
       /* tank_2.AddComponent<Animation>(2, 4); */
       /* tank_2.AddComponent<BoxCollider>(16 * SCALE, 16 * SCALE); */
     }
