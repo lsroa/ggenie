@@ -1,4 +1,5 @@
 #include "ECS/Components/sprite.h"
+#include "ECS/Components/transform.h"
 #include "ECS/ecs.h"
 
 #include <pybind11/pybind11.h>
@@ -14,6 +15,9 @@ void register_PyEntity(py::module_ &m) {
       .def("add", [](Entity &self, py::object &component) -> Entity & {
         if (py::isinstance<Sprite>(component)) {
           self.AddComponent<Sprite>(component.cast<Sprite>());
+        }
+        if (py::isinstance<Transform>(component)) {
+          self.AddComponent<Transform>(component.cast<Transform>());
         }
         return self;
       });

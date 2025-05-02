@@ -1,12 +1,14 @@
-from gg import Game, Sprite
+from gg import Game, Sprite, Transform
 
 
 def setup(g: Game) -> None:
     print("Hello from python")
-    # s = Sprite(id="tank", rect=(10, 10, 10, 10))
-    # for i in range(100):
-    #     tank_py = g.create_entity()
-    #     tank_py.add(s)
+    s = Sprite(id="tank", rect=(10, 10, 10, 10))
+    t = Transform(x=10.0, y=10.0)
+
+    tank = g.create_entity()
+    tank.add(s)
+    tank.add(t)
 
 
 def update() -> None:

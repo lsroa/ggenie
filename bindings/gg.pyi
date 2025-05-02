@@ -1,4 +1,4 @@
-from typing import Any, Tuple
+from typing import Any
 
 class Entity:
     id: str
@@ -8,8 +8,11 @@ class Game:
     def create_entity(self) -> Entity: ...
 
 class Sprite:
-    def __init__(self, id: str, rect: Tuple[int, int, int, int]) -> None: ...
+    def __init__(self, id: str, rect: tuple[int, int, int, int]) -> None: ...
     id: str
-    rect: Tuple[int, int, int, int]
+    rect: tuple[int, int, int, int]
 
-__all__ = ["Entity", "Game", "Sprite"]
+class Transform:
+    def __init__(self, x: float, y: float) -> None: ...
+
+__all__ = ["Entity", "Game", "Sprite", "Transform"]
