@@ -8,9 +8,12 @@ class Game:
     def create_entity(self) -> Entity: ...
 
 class Sprite:
-    def __init__(self, id: str, rect: tuple[int, int, int, int]) -> None: ...
+    def __init__(
+        self, id: str, rect: tuple[int, int, int, int], scale: tuple[int, int]
+    ) -> None: ...
     id: str
     rect: tuple[int, int, int, int]
+    scale: tuple[int, int]
 
 class Transform:
     def __init__(self, x: float, y: float) -> None: ...
