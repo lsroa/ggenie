@@ -79,7 +79,7 @@ class Game {
       /* Call the update of the systems */
       // registry->GetSystem<CollisionSystem>().Update(event_bus);
       /* registry->GetSystem<MovementSystem>().Update(delta); */
-      /* registry->GetSystem<AnimationSystem>().Update(); */
+      registry->GetSystem<AnimationSystem>().Update();
 
       /* Add batched entities */
       registry->Update();
@@ -162,11 +162,11 @@ class Game {
       /* tank_1.AddComponent<Animation>(2, 4); */
       /* tank_1.AddComponent<BoxCollider>(16 * SCALE, 16 * SCALE); */
 
-      /* auto tank_2 = registry->CreateEntity(); */
-      /* tank_2.AddComponent<Transform>(glm::vec2(100, 0)); */
+      auto tank_2 = registry->CreateEntity();
+      tank_2.AddComponent<Transform>(glm::vec2(100, 0));
       /* tank_2.AddComponent<RigidBody>(glm::vec2(-1.0, 0.0)); */
-      /* tank_2.AddComponent<Sprite>("tank", 0, 16, 16, 16, glm::vec2(SCALE), true); */
-      /* tank_2.AddComponent<Animation>(2, 4); */
+      tank_2.AddComponent<Sprite>("tank", 0, 16, 16, 16, glm::vec2(SCALE), true);
+      tank_2.AddComponent<Animation>(2, 4);
       /* tank_2.AddComponent<BoxCollider>(16 * SCALE, 16 * SCALE); */
     }
 };

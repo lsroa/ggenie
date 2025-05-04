@@ -19,9 +19,8 @@ class AnimationSystem : public System {
           continue;
         }
 
-        animation.current_frame = 0;
-        /* (static_cast<int>(glfwGetTime()) - animation.start_time) * animation.speed / 1000 % animation.total_frames;
-         */
+        animation.current_frame =
+            static_cast<int>((glfwGetTime() - animation.start_time) * 10 / animation.speed) % animation.total_frames;
 
         sprite.x = animation.current_frame * sprite.w;
       }

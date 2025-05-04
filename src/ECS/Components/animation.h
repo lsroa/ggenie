@@ -5,7 +5,7 @@ struct Animation {
     int total_frames;
     int current_frame;
     int speed;
-    int start_time;
+    double start_time;
     bool is_loop;
 
     Animation(int total_frames = 1, int speed = 1, bool is_loop = true) {
