@@ -37,10 +37,8 @@ void Texture::Load() {
   int width, height;
   int depth;
 
-  /* int TYPE = this->file_path.extension() == ".png" ? GL_RGBA : GL_RGB; */
-  int TYPE = GL_RGB;
+  int TYPE = this->file_path.extension() == ".png" ? GL_RGBA : GL_RGB;
 
-  /* stbi_set_flip_vertically_on_load(true); */
   unsigned char *data = stbi_load(file_path.c_str(), &width, &height, &depth, 0);
 
   if (data == NULL) {
