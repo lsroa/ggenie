@@ -1,3 +1,4 @@
+#include "ECS/Components/animation.h"
 #include "ECS/Components/sprite.h"
 #include "ECS/Components/transform.h"
 #include "ECS/ecs.h"
@@ -18,6 +19,9 @@ void register_PyEntity(py::module_ &m) {
         }
         if (py::isinstance<Transform>(component)) {
           self.AddComponent<Transform>(component.cast<Transform>());
+        }
+        if (py::isinstance<Animation>(component)) {
+          self.AddComponent<Animation>(component.cast<Animation>());
         }
         return self;
       });

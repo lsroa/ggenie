@@ -6,6 +6,7 @@ namespace py = pybind11;
 void register_PySprite(py::module_ &m);
 void register_PyEntity(py::module_ &m);
 void register_PyTransform(py::module_ &m);
+void register_PyAnimation(py::module_ &m);
 
 PYBIND11_MODULE(gg, m) {
   m.doc() = "render module";
@@ -19,4 +20,5 @@ PYBIND11_MODULE(gg, m) {
   register_PyEntity(m);
   register_PySprite(m);
   register_PyTransform(m);
+  register_PyAnimation(m);
 }
