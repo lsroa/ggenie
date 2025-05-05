@@ -155,13 +155,6 @@ class Game {
         }
       }
 
-      /* auto tank_1 = registry->CreateEntity(); */
-      /* tank_1.AddComponent<Transform>(glm::vec2(0.0, 0.0)); */
-      /* tank_1.AddComponent<RigidBody>(glm::vec2(1.0, 0.0)); */
-      /* tank_1.AddComponent<Sprite>("tank", 0, 16, 16, 16, glm::vec2(SCALE)); */
-      /* tank_1.AddComponent<Animation>(2, 4); */
-      /* tank_1.AddComponent<BoxCollider>(16 * SCALE, 16 * SCALE); */
-
       auto tank_2 = registry->CreateEntity();
       tank_2.AddComponent<Transform>(glm::vec2(100, 0));
       /* tank_2.AddComponent<RigidBody>(glm::vec2(-1.0, 0.0)); */
