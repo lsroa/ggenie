@@ -15,3 +15,10 @@ class Texture {
   private:
     void Load();
 };
+
+inline auto operator<<(std::ostream &os, const Texture &texture) -> std::ostream & {
+  std::string texture_str =
+      std::format(" Texture{{ id: {}, ({}x{}) }} ", texture.renderer_id, texture.width, texture.height);
+  os << texture_str;
+  return os;
+}
