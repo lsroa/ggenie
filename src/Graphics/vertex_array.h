@@ -1,6 +1,4 @@
 #pragma once
-#include "vertex_buffer.h"
-#include "vertex_buffer_layout.h"
 
 class VertexArray {
   private:
@@ -10,7 +8,8 @@ class VertexArray {
     VertexArray();
     ~VertexArray();
 
-    void AddLayout(VertexBuffer &vbo, VertexBufferLayout &layout) const;
+    template <typename T>
+    void AddLayout() const;
     void Bind() const;
     void Unbind() const;
 };

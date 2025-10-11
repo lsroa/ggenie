@@ -1,6 +1,9 @@
 #include "vertex_array.h"
+#include "Graphics/vertex.h"
 #include "Utils/logger.h"
+#include "glm/ext/vector_float2.hpp"
 
+#include <cstddef>
 #include <glad/glad.h>
 
 VertexArray::VertexArray() {
@@ -19,26 +22,40 @@ VertexArray::~VertexArray() {
   glBindVertexArray(0);
 }
 
-void VertexArray::AddLayout(VertexBuffer &vbo, VertexBufferLayout &layout) const {
-  Logger::info("Add layout");
+template <>
+void VertexArray::AddLayout<Vertex>() const {
+  Logger::info("Add layout for Vertex");
   this->Bind();
-  vbo.Bind();
 
-  for (int i = 0; i < layout.GetAttributes().size(); i++) {
-    const auto &attribute = layout.GetAttributes()[i];
-    glEnableVertexAttribArray(i);
-    glVertexAttribPointer(
-        // Attribute index
-        i,
-        // the total size of the attribute
-        attribute.count,
-        // the type that holds
-        attribute.type,
-        // is not normalized
-        GL_FALSE,
-        // offset for the next row
-        layout.stride,
-        // offset within the row for the attribute
-        reinterpret_cast<void *>(attribute.offset));
-  }
+  // Position
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(
+      // Attribute index
+      0,
+      // the total size of the attribute
+      2,
+      // the type that holds
+      GL_FLOAT,
+      // is not normalized
+      GL_FALSE,
+      // offset for the next row
+      sizeof(Vertex),
+      // offset within the row for the attribute
+      (void *)(offsetof(Vertex, position)));
+
+  // Texture Coordinates
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(
+      // Attribute index
+      1,
+      // the total size of the attribute
+      2,
+      // the type that holds
+      GL_FLOAT,
+      // is not normalized
+      GL_FALSE,
+      // offset for the next row
+      sizeof(Vertex),
+      // offset within the row for the attribute
+      (void *)(offsetof(Vertex, text_coord)));
 }
