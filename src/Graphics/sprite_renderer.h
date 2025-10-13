@@ -4,8 +4,7 @@
 #include "Graphics/index_buffer.h"
 #include "Graphics/shader.h"
 #include "Graphics/vertex_array.h"
-#include "glm/ext/matrix_clip_space.hpp"
-#include "glm/ext/matrix_transform.hpp"
+#include "Graphics/vertex_buffer.h"
 
 class SpriteRenderer {
   private:
@@ -13,19 +12,20 @@ class SpriteRenderer {
     VertexArray m_Vao;
     IndexBuffer m_Ebo;
     Shader m_Shader;
-    static constexpr float quad[] = {
-        // Position | Texture coordinates
-        -1.0f, -1.0f, 0.0f, 0.0f, // bottom left
-        1.0f,  -1.0f, 1.0f, 0.0f, // bottom right
-        -1.0f, 1.0f,  0.0f, 1.0f, // top left
-        1.0f,  1.0f,  1.0f, 1.0f, // top right
-    };
-    static constexpr unsigned int indices[] = {0, 1, 3, 0, 2, 3};
-    static const glm::mat4 projection;
+    // static constexpr float quad[] = {
+    //     // Position | Texture coordinates
+    //     -1.0f, -1.0f, 0.0f, 0.0f, // bottom left
+    //     1.0f,  -1.0f, 1.0f, 0.0f, // bottom right
+    //     -1.0f, 1.0f,  0.0f, 1.0f, // top left
+    //     1.0f,  1.0f,  1.0f, 1.0f, // top right
+    // };
+    static constexpr unsigned int m_Indeces[] = {0, 1, 3, 0, 2, 3};
+    static const glm::mat4 m_Projection;
     static const glm::mat4 view;
 
   public:
-    SpriteRenderer();
+    SpriteRenderer(unsigned int quads = 1);
     ~SpriteRenderer() = default;
     void render(const class Texture *texture, const Sprite &sprite, const glm::vec2 &position) const;
+    void batch_render(const std::vector<std::pair<const Texture *, glm::vec2>> &sprites);
 };

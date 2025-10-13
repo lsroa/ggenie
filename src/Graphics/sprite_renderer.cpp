@@ -1,8 +1,12 @@
 #include "sprite_renderer.h"
 
 #include "GLFW/glfw3.h"
+#include "Game/game.h"
 #include "Graphics/texture.h"
+#include "Graphics/vertex.h"
 #include "Utils/logger.h"
+#include <OpenGL/gl.h>
+#include <array>
 #include <glad/glad.h>
 
 #include <glm/ext/matrix_clip_space.hpp>
@@ -14,22 +18,40 @@
     assert(false);                                                                                                     \
   }
 
-const glm::mat4 SpriteRenderer::projection = glm::ortho(0.0f, 960.0f, 576.0f, 0.0f, -1.0f, 1.0f);
+const glm::mat4 SpriteRenderer::m_Projection = glm::ortho(0.0f, (float)WIDTH, (float)HEIGHT, 0.0f, -1.0f, 1.0f);
 const glm::mat4 SpriteRenderer::view = glm::translate(glm::mat4(1), glm::vec3(0, 0, 0));
 
-SpriteRenderer::SpriteRenderer()
-    : m_Vbo(quad, sizeof(quad)), m_Vao(), m_Ebo(indices, sizeof(indices)),
+SpriteRenderer::SpriteRenderer(unsigned int quads)
+    : m_Vbo(quads * 4), m_Vao(), m_Ebo(m_Indeces, sizeof(m_Indeces)),
       m_Shader(Shader({"./assets/shaders/color.frag", "./assets/shaders/default.vert"})) {
 
   Logger::info("Sprite renderer spawn");
-  VertexBufferLayout layout;
-
-  layout.AddAttribute<float>("position", 2);
-  layout.AddAttribute<float>("texture_coordinates", 2);
 
   this->m_Vao = VertexArray();
-  this->m_Vao.AddLayout(m_Vbo, layout);
+  GL_ERR_CHECK("Add VertexArray");
+
+  this->m_Vao.AddLayout<Vertex>();
+  GL_ERR_CHECK("Add layout");
 };
+
+std::array<Vertex, 4> CreateQuad() {
+  return {
+      Vertex{.position = glm::vec2(-1.0f, -1.0f), .text_coord = glm::vec2(0.0f, 0.0f)},
+      Vertex{.position = glm::vec2(1.0f, -1.0f), .text_coord = glm::vec2(1.0f, 0.0f)},
+      Vertex{.position = glm::vec2(-1.0f, 1.0f), .text_coord = glm::vec2(0.0f, 1.0f)},
+      Vertex{.position = glm::vec2(1.0f, 1.0f), .text_coord = glm::vec2(1.0f, 1.0f)},
+  };
+};
+
+void SpriteRenderer::batch_render(const std::vector<std::pair<const Texture *, glm::vec2>> &sprites) {
+  Logger::info("batch rendering");
+  for (const auto &pair : sprites) {
+    auto [texture, position] = pair;
+    std::cout << "Pair: -------------------------" << std::endl;
+    std::cout << "\t Texture: " << *texture << std::endl;
+    std::cout << std::format("\t Position: x:{} y:{}\n", position.x, position.y) << std::endl;
+  }
+}
 
 void SpriteRenderer::render(const Texture *texture, const Sprite &sprite, const glm::vec2 &position) const {
   if (texture == nullptr) {
@@ -55,7 +77,7 @@ void SpriteRenderer::render(const Texture *texture, const Sprite &sprite, const 
   m_Shader.SetMat4("model", model);
   GL_ERR_CHECK("Set uniform model");
 
-  m_Shader.SetMat4("projection", this->projection);
+  m_Shader.SetMat4("projection", this->m_Projection);
   GL_ERR_CHECK("Set uniform projection");
 
   m_Shader.SetMat4("view", this->view);
